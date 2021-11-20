@@ -6,5 +6,6 @@ build
 artifacts
 cache
 typechain
+typechain-types
 coverage
 coverage.json
