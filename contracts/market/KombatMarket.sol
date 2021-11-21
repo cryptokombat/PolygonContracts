@@ -3,16 +3,16 @@ pragma solidity ^0.8.4;
 
 import '@openzeppelin/contracts/access/AccessControl.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
-import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 import '@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol';
 
 import '../interfaces/ICollection.sol';
+import '../interfaces/IVombat.sol';
 
 contract KombatMarket is AccessControl, ReentrancyGuard, EIP712 {
-    using SafeERC20 for IERC20;
+    using SafeERC20 for IVombat;
 
-    IERC20 public vombat;
+    IVombat public vombat;
 
     address public treasure;
 
@@ -44,7 +44,7 @@ contract KombatMarket is AccessControl, ReentrancyGuard, EIP712 {
     }
 
     constructor(
-        IERC20 _vombat,
+        IVombat _vombat,
         address _treasure,
         address[] memory _collections
     ) EIP712('Kombat Market', '1') {
