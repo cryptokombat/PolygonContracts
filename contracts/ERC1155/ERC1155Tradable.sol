@@ -47,7 +47,7 @@ contract ERC1155Tradable is Ownable, ERC1155PresetMinterPauser {
     }
 
     function uri(uint256 _id) public view override returns (string memory) {
-        require(_exists(_id), 'ERC1155Tradable: token must exists');
+        require(exists(_id), 'ERC1155Tradable: token must exists');
         return string(abi.encodePacked(baseMetadataURI, Strings.toString(_id)));
     }
 
@@ -210,7 +210,7 @@ contract ERC1155Tradable is Ownable, ERC1155PresetMinterPauser {
      * @param _id uint256 ID of the token to query the existence of
      * @return bool whether the token exists
      */
-    function _exists(uint256 _id) internal view returns (bool) {
+    function exists(uint256 _id) public view returns (bool) {
         return creators[_id] != address(0);
     }
 

@@ -8,6 +8,8 @@ interface ICollection {
 
     function balanceOf(address account, uint256 id) external view returns (uint256);
 
+    function exists(uint256 _id) external view returns (bool);
+
     function mint(
         address _to,
         uint256 _id,
