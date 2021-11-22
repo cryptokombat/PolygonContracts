@@ -1,9 +1,11 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import '@openzeppelin/contracts/token/ERC1155/presets/ERC1155PresetMinterPauser.sol';
 import '@openzeppelin/contracts/utils/Strings.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/access/AccessControl.sol';
+import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
+import '@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol';
 
 contract OwnableDelegateProxy {}
 
@@ -11,7 +13,15 @@ contract ProxyRegistry {
     mapping(address => OwnableDelegateProxy) public proxies;
 }
 
-contract ERC1155Tradable is Ownable, ERC1155PresetMinterPauser {
+/**
+ * @title ERC1155Tradable
+ * ERC1155Tradable - ERC1155 contract that whitelists an operator address, 
+ * has create and mint functionality, and supports useful standards from OpenZeppelin,
+  like _exists(), name(), symbol(), and totalSupply()
+ */
+contract ERC1155Tradable is AccessControl, Ownable, ERC1155, ERC1155Burnable {
+    bytes32 public constant MINTER_ROLE = keccak256('MINTER_ROLE');
+
     using Strings for string;
 
     string internal baseMetadataURI;
@@ -30,14 +40,21 @@ contract ERC1155Tradable is Ownable, ERC1155PresetMinterPauser {
         string memory _name,
         string memory _symbol,
         address _proxyRegistryAddress
-    ) ERC1155PresetMinterPauser('') {
+    ) ERC1155('') {
+        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+
+        _setupRole(MINTER_ROLE, _msgSender());
+
         name = _name;
         symbol = _symbol;
         proxyRegistryAddress = _proxyRegistryAddress;
     }
 
     modifier onlyAdminOrOwner() {
-        require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) || (owner() == _msgSender()), 'ERC1155Tradable: must have admin or owner role');
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) || (owner() == _msgSender()),
+            'ERC1155Tradable: must have admin or owner role'
+        );
         _;
     }
 
@@ -47,7 +64,7 @@ contract ERC1155Tradable is Ownable, ERC1155PresetMinterPauser {
     }
 
     function uri(uint256 _id) public view override returns (string memory) {
-        require(exists(_id), 'ERC1155Tradable: token must exists');
+        require(_exists(_id), 'ERC1155Tradable: token must exists');
         return string(abi.encodePacked(baseMetadataURI, Strings.toString(_id)));
     }
 
@@ -159,9 +176,7 @@ contract ERC1155Tradable is Ownable, ERC1155PresetMinterPauser {
         uint256 _id,
         uint256 _quantity,
         bytes memory _data
-    ) public override onlyMinter {
-        require(_to != address(0), 'ERC1155Tradable: mint to the zero address');
-        //TODO Need to test lte condition
+    ) public onlyMinter {
         require(tokenSupply[_id] + _quantity <= tokenMaxSupply[_id], 'ERC1155Tradable: Max supply reached');
         tokenSupply[_id] = tokenSupply[_id] + _quantity;
         _mint(_to, _id, _quantity, _data);
@@ -179,7 +194,7 @@ contract ERC1155Tradable is Ownable, ERC1155PresetMinterPauser {
         uint256[] memory _ids,
         uint256[] memory _quantities,
         bytes memory _data
-    ) public override onlyMinter {
+    ) public onlyMinter {
         require(_to != address(0), 'ERC1155Tradable: mint to the zero address');
         require(_ids.length == _quantities.length, 'ERC1155Tradable: ids and amounts length mismatch');
         for (uint256 i = 0; i < _ids.length; i++) {
@@ -195,7 +210,12 @@ contract ERC1155Tradable is Ownable, ERC1155PresetMinterPauser {
     /**
      * Override isApprovedForAll to whitelist user's OpenSea proxy accounts to enable gas-free listings.
      */
-    function isApprovedForAll(address _owner, address _operator) public view override returns (bool isOperator) {
+    function isApprovedForAll(address _owner, address _operator)
+        public
+        view
+        override
+        returns (bool isOperator)
+    {
         // Whitelist OpenSea proxy contract for easy trading.
         ProxyRegistry proxyRegistry = ProxyRegistry(proxyRegistryAddress);
         if (address(proxyRegistry.proxies(_owner)) == _operator) {
@@ -210,7 +230,7 @@ contract ERC1155Tradable is Ownable, ERC1155PresetMinterPauser {
      * @param _id uint256 ID of the token to query the existence of
      * @return bool whether the token exists
      */
-    function exists(uint256 _id) public view returns (bool) {
+    function _exists(uint256 _id) internal view returns (bool) {
         return creators[_id] != address(0);
     }
 
@@ -235,5 +255,29 @@ contract ERC1155Tradable is Ownable, ERC1155PresetMinterPauser {
      */
     function _setBaseMetadataURI(string memory _newBaseMetadataURI) internal {
         baseMetadataURI = _newBaseMetadataURI;
+    }
+
+    /**
+     * @dev See {IERC165-supportsInterface}.
+     */
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(AccessControl, ERC1155)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
+    }
+
+    function _beforeTokenTransfer(
+        address operator,
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) internal virtual override(ERC1155) {
+        super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
     }
 }
