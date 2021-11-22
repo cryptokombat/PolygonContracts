@@ -51,6 +51,8 @@ contract KombatMarket is AccessControl, ReentrancyGuard, EIP712 {
         vombat = _vombat;
         treasure = _treasure;
         setAllowedCollections(_collections);
+
+        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
     function setTreasure(address _treasure) external onlyAdmin {

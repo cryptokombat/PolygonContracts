@@ -71,6 +71,8 @@ contract KombatGame is AccessControl, ReentrancyGuard, EIP712 {
         consumables = _consumables;
         arenas = _arena;
         stakingContract = _staking;
+
+        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
     function setTreasure(address _treasure) external onlyAdmin {
