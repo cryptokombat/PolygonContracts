@@ -50,7 +50,7 @@ contract KombatMarket is AccessControl, ReentrancyGuard, EIP712 {
     ) EIP712('Kombat Market', '1') {
         vombat = _vombat;
         treasure = _treasure;
-        setAllowedCollections(_collections);
+        _setAllowedCollections(_collections);
 
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
@@ -62,7 +62,7 @@ contract KombatMarket is AccessControl, ReentrancyGuard, EIP712 {
 
     function setAllowedCollections(address[] memory _list) public onlyAdmin {
         require(_list.length > 0, '!length');
-        allowedCollections = _list;
+        _setAllowedCollections(_list);
     }
 
     function setTokenPrices(
@@ -145,5 +145,9 @@ contract KombatMarket is AccessControl, ReentrancyGuard, EIP712 {
             }
         }
         return false;
+    }
+
+    function _setAllowedCollections(address[] memory _list) internal {
+        allowedCollections = _list;
     }
 }
