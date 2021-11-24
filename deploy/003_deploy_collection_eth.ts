@@ -8,10 +8,11 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const { deployer } = await getNamedAccounts()
   const uri = 'https://uat-eth-api.cryptokombat.com/hero/'
+  const proxy = '0x207Fa8Df3a17D96Ca7EA4f2893fcdCb78a304101'
 
-  const args = [uri]
+  const args = [uri, proxy]
 
-  const collectionContract = await deploy('TestERC1155', {
+  const collectionContract = await deploy('CryptoKombatCollectionEthereum', {
     from: deployer,
     args,
     log: true,
@@ -28,7 +29,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       await run('verify:verify', {
         address: collectionContract.address,
         constructorArguments: args,
-        contract: 'contracts/test/TestERC1155.sol:TestERC1155',
       })
     } catch (err) {
       console.log(err)
@@ -40,4 +40,4 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 }
 
 export default func
-func.tags = ['Collection']
+func.tags = ['CollectionEth']

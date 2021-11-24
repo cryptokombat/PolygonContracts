@@ -1,6 +1,6 @@
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { DeployFunction } from 'hardhat-deploy/types'
-import { getCollectionAddress } from '../src/config'
+import { getChainlinkConfig, getCollectionAddress } from '../src/config'
 import { sleep } from '../src/utils'
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
@@ -8,18 +8,21 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deploy } = deployments
 
   const { deployer } = await getNamedAccounts()
-  const chainId = await getChainId()
-  const collectionAddress = await getCollectionAddress(chainId)
 
-  const args = [collectionAddress]
+  const vombat = await hre.ethers.getContract('VombatToken')
+  const collectionEth = await hre.ethers.getContract('CryptoKombatCollectionEthereum')
+  const collectionBsc = await hre.ethers.getContract('CryptoKombatCollectionBinance')
+  const consumables = await hre.ethers.getContract('CryptoKombatConsumables')
 
-  const mixerContract = await deploy('CryptoKombatMixer', {
+  const args = [vombat.address, deployer, [collectionEth.address, collectionBsc.address, consumables.address]]
+
+  const marketContract = await deploy('KombatMarket', {
     from: deployer,
     args,
     log: true,
   })
 
-  console.log('Mixer deployed successfully: ', mixerContract.address)
+  console.log('Market deployed successfully: ', marketContract.address)
 
   if (hre.network.name !== 'hardhat' && hre.network.name !== 'localhost') {
     try {
@@ -28,7 +31,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       await sleep(25000)
 
       await run('verify:verify', {
-        address: mixerContract.address,
+        address: marketContract.address,
         constructorArguments: args,
       })
     } catch (err) {
@@ -42,4 +45,4 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 }
 
 export default func
-func.tags = ['Mixer']
+func.tags = ['Market']

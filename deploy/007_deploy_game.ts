@@ -8,19 +8,31 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deploy } = deployments
 
   const { deployer } = await getNamedAccounts()
-  const chainId = await getChainId()
-  const collectionAddress = await getCollectionAddress(chainId)
-  const config = await getChainlinkConfig(chainId)
 
-  const args = [config.coordinator, config.link, config.fee, config.keyhash, collectionAddress]
+  const vombat = await hre.ethers.getContract('VombatToken')
+  const collectionEth = await hre.ethers.getContract('CryptoKombatCollectionEthereum')
+  const collectionBsc = await hre.ethers.getContract('CryptoKombatCollectionBinance')
+  const consumables = await hre.ethers.getContract('CryptoKombatConsumables')
+  const arena = hre.ethers.constants.AddressZero
+  const stakign = hre.ethers.constants.AddressZero
 
-  const mixerContract = await deploy('CryptoKombatMixerVRF', {
+  const args = [
+    vombat.address,
+    deployer,
+    collectionEth.address,
+    collectionBsc.address,
+    consumables.address,
+    arena,
+    stakign,
+  ]
+
+  const gameContract = await deploy('KombatGame', {
     from: deployer,
     args,
     log: true,
   })
 
-  console.log('Mixer deployed successfully: ', mixerContract.address)
+  console.log('Game deployed successfully: ', gameContract.address)
 
   if (hre.network.name !== 'hardhat' && hre.network.name !== 'localhost') {
     try {
@@ -29,7 +41,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       await sleep(25000)
 
       await run('verify:verify', {
-        address: mixerContract.address,
+        address: gameContract.address,
         constructorArguments: args,
       })
     } catch (err) {
@@ -43,4 +55,4 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 }
 
 export default func
-func.tags = ['MixerVRF']
+func.tags = ['Game']
