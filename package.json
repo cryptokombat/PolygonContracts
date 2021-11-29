@@ -1,11 +1,10 @@
 {
-  "name": "cryptokombat-polygon",
+  "name": "@cryptokombat/polygon-contracts",
   "version": "1.0.0",
   "description": "Crypto Polygon Contracts",
   "engines": {
     "node": "12.x"
   },
-  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cryptokombat/PolygonContracts.git"
