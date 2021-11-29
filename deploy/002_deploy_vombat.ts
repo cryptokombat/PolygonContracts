@@ -26,6 +26,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       await run('verify:verify', {
         address: vombat.address,
         constructorArguments: args,
+        contract: 'contracts/ERC20/VombatToken.sol:VombatToken',
       })
     } catch (err) {
       console.log(err)

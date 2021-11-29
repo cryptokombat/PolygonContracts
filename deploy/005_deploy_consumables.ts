@@ -29,6 +29,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       await run('verify:verify', {
         address: collectionContract.address,
         constructorArguments: args,
+        contract: 'contracts/ERC1155/CryptoKombatConsumables.sol:CryptoKombatConsumables',
       })
     } catch (err) {
       console.log(err)

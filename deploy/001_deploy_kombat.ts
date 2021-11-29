@@ -26,6 +26,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       await run('verify:verify', {
         address: kombat.address,
         constructorArguments: args,
+        contract: 'contracts/ERC20/KombatToken.sol:KombatToken',
       })
     } catch (err) {
       console.log(err)
