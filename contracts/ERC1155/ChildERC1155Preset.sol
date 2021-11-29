@@ -2,7 +2,6 @@
 pragma solidity ^0.8.4;
 
 import '@openzeppelin/contracts/utils/Context.sol';
-import '@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol';
 import './ERC1155Preset.sol';
 
 contract ChildERC1155Preset is ERC1155Preset {
@@ -27,7 +26,10 @@ contract ChildERC1155Preset is ERC1155Preset {
         require(hasRole(DEPOSITOR_ROLE, _msgSender()), '!access');
         require(user != address(0), '!user');
 
-        (uint256[] memory ids, uint256[] memory amounts, bytes memory data) = abi.decode(depositData, (uint256[], uint256[], bytes));
+        (uint256[] memory ids, uint256[] memory amounts, bytes memory data) = abi.decode(
+            depositData,
+            (uint256[], uint256[], bytes)
+        );
 
         require(ids.length == amounts.length, '!length');
 

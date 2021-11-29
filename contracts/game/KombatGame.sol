@@ -121,6 +121,14 @@ contract KombatGame is AccessControl, ReentrancyGuard, EIP712 {
         emit PVPKombat(winner.user, loser.user);
     }
 
+    /**
+     * @dev See {EIP712-DOMAIN_SEPARATOR}.
+     */
+    // solhint-disable-next-line func-name-mixedcase
+    function DOMAIN_SEPARATOR() external view returns (bytes32) {
+        return _domainSeparatorV4();
+    }
+
     function distributeReward(address user, uint256 arenaId) internal {
         uint256 wonAmount = (winReward * BASE_BP) / winnerShare;
         uint256 stakeAmount = (winReward * BASE_BP) / stakerShare;

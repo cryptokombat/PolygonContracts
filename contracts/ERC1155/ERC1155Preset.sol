@@ -28,4 +28,12 @@ contract ERC1155Preset is Context, ERC1155Tradable, EIP712 {
         }
         return sender;
     }
+
+    /**
+     * @dev See {EIP712-DOMAIN_SEPARATOR}.
+     */
+    // solhint-disable-next-line func-name-mixedcase
+    function DOMAIN_SEPARATOR() external view returns (bytes32) {
+        return _domainSeparatorV4();
+    }
 }

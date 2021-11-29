@@ -147,6 +147,14 @@ contract KombatMarket is AccessControl, ReentrancyGuard, EIP712 {
         return false;
     }
 
+    /**
+     * @dev See {EIP712-DOMAIN_SEPARATOR}.
+     */
+    // solhint-disable-next-line func-name-mixedcase
+    function DOMAIN_SEPARATOR() external view returns (bytes32) {
+        return _domainSeparatorV4();
+    }
+
     function _setAllowedCollections(address[] memory _list) internal {
         allowedCollections = _list;
     }
