@@ -5,7 +5,5 @@ build
 .vscode
 artifacts
 cache
-typechain
-typechain-types
 coverage
 coverage.json
