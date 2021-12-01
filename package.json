@@ -21,7 +21,7 @@
     "compile": "hardhat compile",
     "deploy": "hardhat deploy",
     "verify": "hardhat verify",
-    "export": "hardhat export --export-all ./deployments/export.json",
+    "export": "hardhat export --export ./deployments/export.json",
     "flatten": "hardhat flatten",
     "test": "hardhat test",
     "setup": "hardhat run",
