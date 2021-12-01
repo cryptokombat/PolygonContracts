@@ -100,7 +100,7 @@ export const EthCollection = () => {
     1,
     ...heroesGenerator(1),
   ]
-  const initial = Array.from({ length: amount.length }, () => 1).flat()
+  const initial = Array.from({ length: amount.length }, () => 0).flat()
   return {
     amount,
     initial,
@@ -109,7 +109,7 @@ export const EthCollection = () => {
 
 export const BscCollection = () => {
   const amount = [...heroesGenerator(7), 3, 3, 3, ...heroesGenerator(2), 3]
-  const initial = Array.from({ length: amount.length }, () => 1).flat()
+  const initial = Array.from({ length: amount.length }, () => 0).flat()
   return {
     amount,
     initial,
