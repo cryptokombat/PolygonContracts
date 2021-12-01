@@ -1,6 +1,6 @@
 import { BigNumber, utils } from 'ethers'
 import { NomicLabsHardhatPluginError } from 'hardhat/plugins'
-import { arrayRange } from './utils'
+import { arrayRange, tokenToWei } from './utils'
 
 export enum NetworkID {
   MAINNET = 1,
@@ -76,8 +76,97 @@ export const createTokenArgs = {
   initialArray,
 }
 
+const heroesAmount = [1, 10, 100, 1000]
+const heroesGenerator = (amount: number): Array<number> => {
+  return Array.from({ length: amount }, () => heroesAmount).flat()
+}
+
+export const EthCollection = () => {
+  const amount = [
+    ...heroesGenerator(5),
+    3,
+    3,
+    3,
+    ...heroesGenerator(8),
+    1,
+    3,
+    1,
+    1,
+    1,
+    3,
+    ...heroesGenerator(1),
+    1,
+    1,
+    1,
+    ...heroesGenerator(1),
+  ]
+  const initial = Array.from({ length: amount.length }, () => 1).flat()
+  return {
+    amount,
+    initial,
+  }
+}
+
+export const BscCollection = () => {
+  const amount = [...heroesGenerator(7), 3, 3, 3, ...heroesGenerator(2), 3]
+  const initial = Array.from({ length: amount.length }, () => 1).flat()
+  return {
+    amount,
+    initial,
+  }
+}
+
 type TokenMapping = {
-  [key in HeroEdition]: number[]
+  [key in HeroEdition]?: number[]
+}
+type TokenPrice = {
+  [key in HeroEdition]?: string[]
+}
+
+export const EthMarket = () => {
+  const edition: TokenMapping = {
+    [HeroEdition.EPIC]: [...arrayRange(2, 18, 4), ...arrayRange(25, 53, 4), 63, 70],
+    [HeroEdition.RARE]: [...arrayRange(3, 19, 4), ...arrayRange(26, 54, 4), 64, 71],
+    [HeroEdition.COMMON]: [...arrayRange(4, 20, 4), ...arrayRange(27, 55, 4), 65, 72],
+  }
+  const price: TokenPrice = {
+    [HeroEdition.EPIC]: Array.from({ length: edition[HeroEdition.EPIC]!.length }, () =>
+      tokenToWei(1200)
+    ).flat(),
+    [HeroEdition.RARE]: Array.from({ length: edition[HeroEdition.RARE]!.length }, () =>
+      tokenToWei(120)
+    ).flat(),
+    [HeroEdition.COMMON]: Array.from({ length: edition[HeroEdition.COMMON]!.length }, () =>
+      tokenToWei(12)
+    ).flat(),
+  }
+  return {
+    edition,
+    price,
+  }
+}
+
+export const BscMarket = () => {
+  const edition: TokenMapping = {
+    [HeroEdition.EPIC]: [...arrayRange(2, 28, 4), 33, 37],
+    [HeroEdition.RARE]: [...arrayRange(3, 28, 4), 34, 38],
+    [HeroEdition.COMMON]: [...arrayRange(4, 28, 4), 35, 39],
+  }
+  const price: TokenPrice = {
+    [HeroEdition.EPIC]: Array.from({ length: edition[HeroEdition.EPIC]!.length }, () =>
+      tokenToWei(1200)
+    ).flat(),
+    [HeroEdition.RARE]: Array.from({ length: edition[HeroEdition.RARE]!.length }, () =>
+      tokenToWei(120)
+    ).flat(),
+    [HeroEdition.COMMON]: Array.from({ length: edition[HeroEdition.COMMON]!.length }, () =>
+      tokenToWei(12)
+    ).flat(),
+  }
+  return {
+    edition,
+    price,
+  }
 }
 
 const polygonTokenEditionMapping: TokenMapping = {
@@ -142,7 +231,10 @@ export async function getTokenMapping(networkId: string): Promise<TokenMapping |
   const mapping = tokenMappingByChain[chainID]
 
   if (mapping === undefined) {
-    throw new NomicLabsHardhatPluginError('Token Mapping', `The token mapping could not be found for this network. ChainID: ${chainID}.`)
+    throw new NomicLabsHardhatPluginError(
+      'Token Mapping',
+      `The token mapping could not be found for this network. ChainID: ${chainID}.`
+    )
   }
 
   return mapping
