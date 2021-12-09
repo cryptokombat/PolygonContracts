@@ -29,6 +29,7 @@ export interface CryptoKombatConsumablesInterface extends utils.Interface {
     "create(uint256,uint256,bytes)": FunctionFragment;
     "createBatch(uint256[],uint256[],bytes)": FunctionFragment;
     "creators(uint256)": FunctionFragment;
+    "exists(uint256)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
@@ -93,6 +94,10 @@ export interface CryptoKombatConsumablesInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "creators",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "exists",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -205,6 +210,7 @@ export interface CryptoKombatConsumablesInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "creators", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "exists", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getRoleAdmin",
     data: BytesLike
@@ -438,6 +444,8 @@ export interface CryptoKombatConsumables extends BaseContract {
 
     creators(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
 
+    exists(_id: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
+
     getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<[string]>;
 
     grantRole(
@@ -611,6 +619,8 @@ export interface CryptoKombatConsumables extends BaseContract {
 
   creators(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+  exists(_id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
+
   getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
   grantRole(
@@ -777,6 +787,8 @@ export interface CryptoKombatConsumables extends BaseContract {
     ): Promise<void>;
 
     creators(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+    exists(_id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
     getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
@@ -1038,6 +1050,8 @@ export interface CryptoKombatConsumables extends BaseContract {
 
     creators(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
+    exists(_id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
     getRoleAdmin(
       role: BytesLike,
       overrides?: CallOverrides
@@ -1214,6 +1228,11 @@ export interface CryptoKombatConsumables extends BaseContract {
 
     creators(
       arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    exists(
+      _id: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

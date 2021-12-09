@@ -32,6 +32,7 @@ export interface CryptoKombatCollectionEthereumInterface
     "createBatch(uint256[],uint256[],bytes)": FunctionFragment;
     "creators(uint256)": FunctionFragment;
     "deposit(address,bytes)": FunctionFragment;
+    "exists(uint256)": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
@@ -107,6 +108,10 @@ export interface CryptoKombatCollectionEthereumInterface
   encodeFunctionData(
     functionFragment: "deposit",
     values: [string, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "exists",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getRoleAdmin",
@@ -231,6 +236,7 @@ export interface CryptoKombatCollectionEthereumInterface
   ): Result;
   decodeFunctionResult(functionFragment: "creators", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "exists", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getRoleAdmin",
     data: BytesLike
@@ -480,6 +486,8 @@ export interface CryptoKombatCollectionEthereum extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    exists(_id: BigNumberish, overrides?: CallOverrides): Promise<[boolean]>;
+
     getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<[string]>;
 
     grantRole(
@@ -673,6 +681,8 @@ export interface CryptoKombatCollectionEthereum extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  exists(_id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
+
   getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
   grantRole(
@@ -859,6 +869,8 @@ export interface CryptoKombatCollectionEthereum extends BaseContract {
       depositData: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    exists(_id: BigNumberish, overrides?: CallOverrides): Promise<boolean>;
 
     getRoleAdmin(role: BytesLike, overrides?: CallOverrides): Promise<string>;
 
@@ -1140,6 +1152,8 @@ export interface CryptoKombatCollectionEthereum extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    exists(_id: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
     getRoleAdmin(
       role: BytesLike,
       overrides?: CallOverrides
@@ -1337,6 +1351,11 @@ export interface CryptoKombatCollectionEthereum extends BaseContract {
       user: string,
       depositData: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    exists(
+      _id: BigNumberish,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getRoleAdmin(

@@ -50,14 +50,17 @@ export interface KombatGameInterface extends utils.Interface {
     "getRoleAdmin(bytes32)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
-    "processPVPKombat((address,address,uint256,uint256[]),(address,address,uint256,uint256[]),uint256)": FunctionFragment;
+    "processPVEKombat(uint256,(address,address,uint256,uint256[]),uint256,bool)": FunctionFragment;
+    "processPVPKombat(uint256,(address,address,uint256,uint256[]),(address,address,uint256,uint256[]),uint256)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
+    "setArenas(address)": FunctionFragment;
     "setShares(uint256,uint256,uint256)": FunctionFragment;
+    "setStaking(address)": FunctionFragment;
     "setTreasure(address)": FunctionFragment;
     "setWinReward(uint256)": FunctionFragment;
     "stakerShare()": FunctionFragment;
-    "stakingContract()": FunctionFragment;
+    "staking()": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "treasure()": FunctionFragment;
     "vombat()": FunctionFragment;
@@ -108,8 +111,12 @@ export interface KombatGameInterface extends utils.Interface {
     values: [BytesLike, string]
   ): string;
   encodeFunctionData(
+    functionFragment: "processPVEKombat",
+    values: [BigNumberish, KombatStructStruct, BigNumberish, boolean]
+  ): string;
+  encodeFunctionData(
     functionFragment: "processPVPKombat",
-    values: [KombatStructStruct, KombatStructStruct, BigNumberish]
+    values: [BigNumberish, KombatStructStruct, KombatStructStruct, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceRole",
@@ -119,10 +126,12 @@ export interface KombatGameInterface extends utils.Interface {
     functionFragment: "revokeRole",
     values: [BytesLike, string]
   ): string;
+  encodeFunctionData(functionFragment: "setArenas", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setShares",
     values: [BigNumberish, BigNumberish, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "setStaking", values: [string]): string;
   encodeFunctionData(functionFragment: "setTreasure", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setWinReward",
@@ -132,10 +141,7 @@ export interface KombatGameInterface extends utils.Interface {
     functionFragment: "stakerShare",
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "stakingContract",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "staking", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
@@ -182,6 +188,10 @@ export interface KombatGameInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "processPVEKombat",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "processPVPKombat",
     data: BytesLike
   ): Result;
@@ -190,7 +200,9 @@ export interface KombatGameInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setArenas", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setShares", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "setStaking", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setTreasure",
     data: BytesLike
@@ -203,10 +215,7 @@ export interface KombatGameInterface extends utils.Interface {
     functionFragment: "stakerShare",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "stakingContract",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "staking", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -220,13 +229,15 @@ export interface KombatGameInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "PVPKombat(address,address)": EventFragment;
+    "PVEKombat(uint256,address,bool)": EventFragment;
+    "PVPKombat(uint256,address,address)": EventFragment;
     "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
     "RoleGranted(bytes32,address,address)": EventFragment;
     "RoleRevoked(bytes32,address,address)": EventFragment;
     "SharesSet(uint256,uint256,uint256)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "PVEKombat"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PVPKombat"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
@@ -234,9 +245,16 @@ export interface KombatGameInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "SharesSet"): EventFragment;
 }
 
+export type PVEKombatEvent = TypedEvent<
+  [BigNumber, string, boolean],
+  { kombatId: BigNumber; user: string; isWin: boolean }
+>;
+
+export type PVEKombatEventFilter = TypedEventFilter<PVEKombatEvent>;
+
 export type PVPKombatEvent = TypedEvent<
-  [string, string],
-  { winner: string; loser: string }
+  [BigNumber, string, string],
+  { kombatId: BigNumber; winner: string; loser: string }
 >;
 
 export type PVPKombatEventFilter = TypedEventFilter<PVPKombatEvent>;
@@ -329,7 +347,16 @@ export interface KombatGame extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    processPVEKombat(
+      kombatId: BigNumberish,
+      player: KombatStructStruct,
+      arenaId: BigNumberish,
+      win: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     processPVPKombat(
+      kombatId: BigNumberish,
       winner: KombatStructStruct,
       loser: KombatStructStruct,
       arenaId: BigNumberish,
@@ -348,10 +375,20 @@ export interface KombatGame extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setArenas(
+      _arenas: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setShares(
       _winnerShare: BigNumberish,
       _stakerShare: BigNumberish,
       _arenaShare: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setStaking(
+      _staking: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -367,7 +404,7 @@ export interface KombatGame extends BaseContract {
 
     stakerShare(overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    stakingContract(overrides?: CallOverrides): Promise<[string]>;
+    staking(overrides?: CallOverrides): Promise<[string]>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -415,7 +452,16 @@ export interface KombatGame extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  processPVEKombat(
+    kombatId: BigNumberish,
+    player: KombatStructStruct,
+    arenaId: BigNumberish,
+    win: boolean,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   processPVPKombat(
+    kombatId: BigNumberish,
     winner: KombatStructStruct,
     loser: KombatStructStruct,
     arenaId: BigNumberish,
@@ -434,10 +480,20 @@ export interface KombatGame extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setArenas(
+    _arenas: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setShares(
     _winnerShare: BigNumberish,
     _stakerShare: BigNumberish,
     _arenaShare: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setStaking(
+    _staking: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -453,7 +509,7 @@ export interface KombatGame extends BaseContract {
 
   stakerShare(overrides?: CallOverrides): Promise<BigNumber>;
 
-  stakingContract(overrides?: CallOverrides): Promise<string>;
+  staking(overrides?: CallOverrides): Promise<string>;
 
   supportsInterface(
     interfaceId: BytesLike,
@@ -501,7 +557,16 @@ export interface KombatGame extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    processPVEKombat(
+      kombatId: BigNumberish,
+      player: KombatStructStruct,
+      arenaId: BigNumberish,
+      win: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     processPVPKombat(
+      kombatId: BigNumberish,
       winner: KombatStructStruct,
       loser: KombatStructStruct,
       arenaId: BigNumberish,
@@ -520,12 +585,16 @@ export interface KombatGame extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setArenas(_arenas: string, overrides?: CallOverrides): Promise<void>;
+
     setShares(
       _winnerShare: BigNumberish,
       _stakerShare: BigNumberish,
       _arenaShare: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    setStaking(_staking: string, overrides?: CallOverrides): Promise<void>;
 
     setTreasure(_treasure: string, overrides?: CallOverrides): Promise<void>;
 
@@ -536,7 +605,7 @@ export interface KombatGame extends BaseContract {
 
     stakerShare(overrides?: CallOverrides): Promise<BigNumber>;
 
-    stakingContract(overrides?: CallOverrides): Promise<string>;
+    staking(overrides?: CallOverrides): Promise<string>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -553,11 +622,24 @@ export interface KombatGame extends BaseContract {
   };
 
   filters: {
-    "PVPKombat(address,address)"(
+    "PVEKombat(uint256,address,bool)"(
+      kombatId?: BigNumberish | null,
+      user?: string | null,
+      isWin?: boolean | null
+    ): PVEKombatEventFilter;
+    PVEKombat(
+      kombatId?: BigNumberish | null,
+      user?: string | null,
+      isWin?: boolean | null
+    ): PVEKombatEventFilter;
+
+    "PVPKombat(uint256,address,address)"(
+      kombatId?: BigNumberish | null,
       winner?: string | null,
       loser?: string | null
     ): PVPKombatEventFilter;
     PVPKombat(
+      kombatId?: BigNumberish | null,
       winner?: string | null,
       loser?: string | null
     ): PVPKombatEventFilter;
@@ -643,7 +725,16 @@ export interface KombatGame extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    processPVEKombat(
+      kombatId: BigNumberish,
+      player: KombatStructStruct,
+      arenaId: BigNumberish,
+      win: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     processPVPKombat(
+      kombatId: BigNumberish,
       winner: KombatStructStruct,
       loser: KombatStructStruct,
       arenaId: BigNumberish,
@@ -662,10 +753,20 @@ export interface KombatGame extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setArenas(
+      _arenas: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setShares(
       _winnerShare: BigNumberish,
       _stakerShare: BigNumberish,
       _arenaShare: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setStaking(
+      _staking: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -681,7 +782,7 @@ export interface KombatGame extends BaseContract {
 
     stakerShare(overrides?: CallOverrides): Promise<BigNumber>;
 
-    stakingContract(overrides?: CallOverrides): Promise<BigNumber>;
+    staking(overrides?: CallOverrides): Promise<BigNumber>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -735,7 +836,16 @@ export interface KombatGame extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    processPVEKombat(
+      kombatId: BigNumberish,
+      player: KombatStructStruct,
+      arenaId: BigNumberish,
+      win: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     processPVPKombat(
+      kombatId: BigNumberish,
       winner: KombatStructStruct,
       loser: KombatStructStruct,
       arenaId: BigNumberish,
@@ -754,10 +864,20 @@ export interface KombatGame extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setArenas(
+      _arenas: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     setShares(
       _winnerShare: BigNumberish,
       _stakerShare: BigNumberish,
       _arenaShare: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setStaking(
+      _staking: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -773,7 +893,7 @@ export interface KombatGame extends BaseContract {
 
     stakerShare(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    stakingContract(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    staking(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     supportsInterface(
       interfaceId: BytesLike,
