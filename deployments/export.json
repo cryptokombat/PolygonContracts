@@ -3,7 +3,7 @@
   "chainId": "80001",
   "contracts": {
     "CryptoKombatCollectionBinance": {
-      "address": "0x3a0b1bFb1F1D247d3bB7A488D2F12321081A7940",
+      "address": "0x19Efa5eD59832757139E130b2c54Ff363325DbA9",
       "abi": [
         {
           "inputs": [
@@ -466,6 +466,25 @@
           "name": "deposit",
           "outputs": [],
           "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "_id",
+              "type": "uint256"
+            }
+          ],
+          "name": "exists",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
           "type": "function"
         },
         {
@@ -967,7 +986,7 @@
       ]
     },
     "CryptoKombatCollectionEthereum": {
-      "address": "0x828B24AeF75f5E125a71614d610660Dc77921F05",
+      "address": "0x22c1Cf4B01E7E875Aed765F13f83453B656E46fc",
       "abi": [
         {
           "inputs": [
@@ -1430,6 +1449,25 @@
           "name": "deposit",
           "outputs": [],
           "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "_id",
+              "type": "uint256"
+            }
+          ],
+          "name": "exists",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
           "type": "function"
         },
         {
@@ -1931,7 +1969,7 @@
       ]
     },
     "CryptoKombatConsumables": {
-      "address": "0xF7C866Efa3A9602D38a4B634CeED2FA3be8A52B4",
+      "address": "0xAD0630238531f665710BB2CCC58e61E0654Fe922",
       "abi": [
         {
           "inputs": [
@@ -2360,6 +2398,25 @@
               "internalType": "address",
               "name": "",
               "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "_id",
+              "type": "uint256"
+            }
+          ],
+          "name": "exists",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
             }
           ],
           "stateMutability": "view",
@@ -2828,7 +2885,7 @@
       ]
     },
     "KombatGame": {
-      "address": "0x88f230889FF3Fdad91F8Ca93435B42112705de91",
+      "address": "0x9D115c421adcFDCfd35B584705c235Af88253bDF",
       "abi": [
         {
           "inputs": [
@@ -2874,6 +2931,37 @@
         {
           "anonymous": false,
           "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "kombatId",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "bool",
+              "name": "isWin",
+              "type": "bool"
+            }
+          ],
+          "name": "PVEKombat",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "kombatId",
+              "type": "uint256"
+            },
             {
               "indexed": true,
               "internalType": "address",
@@ -3171,6 +3259,61 @@
         {
           "inputs": [
             {
+              "internalType": "uint256",
+              "name": "kombatId",
+              "type": "uint256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "user",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "collection",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "heroId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "consumables",
+                  "type": "uint256[]"
+                }
+              ],
+              "internalType": "struct KombatGame.KombatStruct",
+              "name": "player",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint256",
+              "name": "arenaId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "win",
+              "type": "bool"
+            }
+          ],
+          "name": "processPVEKombat",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "kombatId",
+              "type": "uint256"
+            },
+            {
               "components": [
                 {
                   "internalType": "address",
@@ -3274,6 +3417,19 @@
         {
           "inputs": [
             {
+              "internalType": "address",
+              "name": "_arenas",
+              "type": "address"
+            }
+          ],
+          "name": "setArenas",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
               "internalType": "uint256",
               "name": "_winnerShare",
               "type": "uint256"
@@ -3290,6 +3446,19 @@
             }
           ],
           "name": "setShares",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_staking",
+              "type": "address"
+            }
+          ],
+          "name": "setStaking",
           "outputs": [],
           "stateMutability": "nonpayable",
           "type": "function"
@@ -3335,7 +3504,7 @@
         },
         {
           "inputs": [],
-          "name": "stakingContract",
+          "name": "staking",
           "outputs": [
             {
               "internalType": "address",
@@ -3420,7 +3589,7 @@
       ]
     },
     "KombatMarket": {
-      "address": "0x07Edc6A1212C4695Cb178F6557646C76a9BFf89C",
+      "address": "0x5139D896AC5665652AEf806D4ee1821F22EdfF89",
       "abi": [
         {
           "inputs": [
