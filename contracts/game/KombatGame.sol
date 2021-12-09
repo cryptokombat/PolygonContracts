@@ -2,7 +2,6 @@
 pragma solidity ^0.8.4;
 
 import '@openzeppelin/contracts/access/AccessControl.sol';
-import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 import '@openzeppelin/contracts/token/ERC721/IERC721.sol';
 import '@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol';
@@ -10,7 +9,7 @@ import '@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol';
 import '../interfaces/ICollection.sol';
 import '../interfaces/IVombat.sol';
 
-contract KombatGame is AccessControl, ReentrancyGuard, EIP712 {
+contract KombatGame is AccessControl, EIP712 {
     bytes32 public constant AUTOMATION_ROLE = keccak256('AUTOMATION_ROLE');
 
     using SafeERC20 for IVombat;
@@ -32,18 +31,19 @@ contract KombatGame is AccessControl, ReentrancyGuard, EIP712 {
 
     address public treasure;
 
-    ICollection public immutable collectionEth;
-    ICollection public immutable collectionBsc;
-    ICollection public immutable consumables;
-    IERC721 public immutable arenas;
+    ICollection public collectionEth;
+    ICollection public collectionBsc;
+    ICollection public consumables;
 
-    address public stakingContract;
+    IERC721 public arenas;
+    address public staking;
 
     //1 Vombat default reward
     uint256 public winReward = 1e18;
 
     event SharesSet(uint256 indexed winnerShare, uint256 indexed stakerShare, uint256 indexed arenaShare);
-    event PVPKombat(address indexed winner, address indexed loser);
+    event PVPKombat(uint256 indexed kombatId, address indexed winner, address indexed loser);
+    event PVEKombat(uint256 indexed kombatId, address indexed user, bool indexed isWin);
 
     modifier onlyAdmin() {
         require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), '!admin');
@@ -70,9 +70,19 @@ contract KombatGame is AccessControl, ReentrancyGuard, EIP712 {
         collectionBsc = _collectionBsc;
         consumables = _consumables;
         arenas = _arena;
-        stakingContract = _staking;
+        staking = _staking;
 
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+    }
+
+    function setArenas(address _arenas) external onlyAdmin {
+        require(_arenas != address(0), '!address');
+        arenas = IERC721(_arenas);
+    }
+
+    function setStaking(address _staking) external onlyAdmin {
+        require(_staking != address(0), '!address');
+        staking = _staking;
     }
 
     function setTreasure(address _treasure) external onlyAdmin {
@@ -98,6 +108,7 @@ contract KombatGame is AccessControl, ReentrancyGuard, EIP712 {
     }
 
     function processPVPKombat(
+        uint256 kombatId,
         KombatStruct memory winner,
         KombatStruct memory loser,
         uint256 arenaId
@@ -118,7 +129,26 @@ contract KombatGame is AccessControl, ReentrancyGuard, EIP712 {
 
         distributeReward(winner.user, arenaId);
 
-        emit PVPKombat(winner.user, loser.user);
+        emit PVPKombat(kombatId, winner.user, loser.user);
+    }
+
+    function processPVEKombat(
+        uint256 kombatId,
+        KombatStruct memory player,
+        uint256 arenaId,
+        bool win
+    ) external onlyAutomation {
+        ICollection pCollection = ICollection(player.collection);
+
+        require(pCollection.balanceOf(player.user, player.heroId) > 0, '!owner');
+
+        if (player.consumables.length > 0) {
+            consumables.burnBatch(player.user, player.consumables, fillArray(player.consumables.length, 1));
+        }
+        if (win) {
+            distributeReward(player.user, arenaId);
+        }
+        emit PVEKombat(kombatId, player.user, win);
     }
 
     /**
@@ -132,18 +162,21 @@ contract KombatGame is AccessControl, ReentrancyGuard, EIP712 {
     function distributeReward(address user, uint256 arenaId) internal {
         uint256 wonAmount = (winReward * BASE_BP) / winnerShare;
         uint256 stakeAmount = (winReward * BASE_BP) / stakerShare;
-        uint256 arenaAmount = (winReward * BASE_BP) / stakerShare;
+        uint256 arenaAmount = (winReward * BASE_BP) / arenaShare;
 
-        address arenaOwner = arenas.ownerOf(arenaId);
+        if (staking != address(0)) {
+            mintOrTransfer(staking, stakeAmount);
+        } else {
+            wonAmount = wonAmount + stakeAmount;
+        }
+
+        if (arenaId != 0 && address(arenas) != address(0) && arenas.ownerOf(arenaId) != address(0)) {
+            mintOrTransfer(arenas.ownerOf(arenaId), arenaAmount);
+        } else {
+            wonAmount = wonAmount + arenaAmount;
+        }
 
         mintOrTransfer(user, wonAmount);
-        mintOrTransfer(stakingContract, stakeAmount);
-
-        if (arenaOwner != address(0)) {
-            mintOrTransfer(arenaOwner, arenaAmount);
-        } else {
-            mintOrTransfer(treasure, arenaAmount);
-        }
     }
 
     function mintOrTransfer(address to, uint256 amount) internal {
