@@ -36,4 +36,13 @@ contract ERC1155Preset is Context, ERC1155Tradable, EIP712 {
     function DOMAIN_SEPARATOR() external view returns (bytes32) {
         return _domainSeparatorV4();
     }
+
+    /**
+     * @dev Returns whether the specified token exists by checking to see if it has a creator
+     * @param _id uint256 ID of the token to query the existence of
+     * @return bool whether the token exists
+     */
+    function exists(uint256 _id) external view returns (bool) {
+        return creators[_id] != address(0);
+    }
 }
