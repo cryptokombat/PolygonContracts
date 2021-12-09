@@ -25,7 +25,7 @@ contract KombatGame is AccessControl, EIP712 {
 
     uint256 public winnerShare = 6000;
     uint256 public stakerShare = 3000;
-    uint256 public arenaShare = 4000;
+    uint256 public arenaShare = 1000;
 
     IVombat public immutable vombat;
 
@@ -160,9 +160,9 @@ contract KombatGame is AccessControl, EIP712 {
     }
 
     function distributeReward(address user, uint256 arenaId) internal {
-        uint256 wonAmount = (winReward * BASE_BP) / winnerShare;
-        uint256 stakeAmount = (winReward * BASE_BP) / stakerShare;
-        uint256 arenaAmount = (winReward * BASE_BP) / arenaShare;
+        uint256 wonAmount = (winReward * winnerShare) / BASE_BP;
+        uint256 stakeAmount = (winReward * stakerShare) / BASE_BP;
+        uint256 arenaAmount = (winReward * arenaShare) / BASE_BP;
 
         if (staking != address(0)) {
             mintOrTransfer(staking, stakeAmount);
