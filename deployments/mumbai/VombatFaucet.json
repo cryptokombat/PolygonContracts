@@ -1,0 +1,174 @@
+{
+  "address": "0xD8523df83E1Fffccc39f27446dBC659c32CBd449",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_vombat",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "allowedToWithdraw",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "requestTokens",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "tokenAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "vombat",
+      "outputs": [
+        {
+          "internalType": "contract IVombat",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "waitTime",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x5f45a5d72059e701116ab257ad0b2d432a6df0ebfc5bb101c8ab2b875d8c71b7",
+  "receipt": {
+    "to": null,
+    "from": "0x97e4f195f4D29354Eb1406221D290F54418F4267",
+    "contractAddress": "0xD8523df83E1Fffccc39f27446dBC659c32CBd449",
+    "transactionIndex": 1,
+    "gasUsed": "207481",
+    "logsBloom": "0x00000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000001000008000000000000000000000000000000000000000000000000000000000800000000000000000000100000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000002000000000000000200000000000000020000000000000000001000000000000000000000000004000000000000000000001000000000000000000000000000000100000000000000000020000000000000000000000000000000000000000000000000000100000",
+    "blockHash": "0x86112a2727ab83da48e52b16b6ccd31aed48d28b92b629b6e14593d6fc03f3b2",
+    "transactionHash": "0x5f45a5d72059e701116ab257ad0b2d432a6df0ebfc5bb101c8ab2b875d8c71b7",
+    "logs": [
+      {
+        "transactionIndex": 1,
+        "blockNumber": 22904579,
+        "transactionHash": "0x5f45a5d72059e701116ab257ad0b2d432a6df0ebfc5bb101c8ab2b875d8c71b7",
+        "address": "0x0000000000000000000000000000000000001010",
+        "topics": [
+          "0x4dfe1bbbcf077ddc3e01291eea2d5c70c2b422b415d95645b9adcfd678cb1d63",
+          "0x0000000000000000000000000000000000000000000000000000000000001010",
+          "0x00000000000000000000000097e4f195f4d29354eb1406221d290f54418f4267",
+          "0x000000000000000000000000c26880a0af2ea0c7e8130e6ec47af756465452e8"
+        ],
+        "data": "0x00000000000000000000000000000000000000000000000000075f0758ed7038000000000000000000000000000000000000000000000000559d1932918eb1ba0000000000000000000000000000000000000000000003889d6564028f50bcd50000000000000000000000000000000000000000000000005595ba2b38a141820000000000000000000000000000000000000000000003889d6cc309e83e2d0d",
+        "logIndex": 2,
+        "blockHash": "0x86112a2727ab83da48e52b16b6ccd31aed48d28b92b629b6e14593d6fc03f3b2"
+      }
+    ],
+    "blockNumber": 22904579,
+    "cumulativeGasUsed": "241758",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "0x15f2b9FAAC1C3A5A8FFd3DCA832AE91516a3e778"
+  ],
+  "solcInputHash": "808cdbae85dbfd87a3fa253ad92712e4",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_vombat\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_address\",\"type\":\"address\"}],\"name\":\"allowedToWithdraw\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"requestTokens\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"tokenAmount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"vombat\",\"outputs\":[{\"internalType\":\"contract IVombat\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"waitTime\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/utils/VombatFaucet.sol\":\"VombatFaucet\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @dev Interface of the ERC20 standard as defined in the EIP.\\n */\\ninterface IERC20 {\\n    /**\\n     * @dev Returns the amount of tokens in existence.\\n     */\\n    function totalSupply() external view returns (uint256);\\n\\n    /**\\n     * @dev Returns the amount of tokens owned by `account`.\\n     */\\n    function balanceOf(address account) external view returns (uint256);\\n\\n    /**\\n     * @dev Moves `amount` tokens from the caller's account to `recipient`.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * Emits a {Transfer} event.\\n     */\\n    function transfer(address recipient, uint256 amount) external returns (bool);\\n\\n    /**\\n     * @dev Returns the remaining number of tokens that `spender` will be\\n     * allowed to spend on behalf of `owner` through {transferFrom}. This is\\n     * zero by default.\\n     *\\n     * This value changes when {approve} or {transferFrom} are called.\\n     */\\n    function allowance(address owner, address spender) external view returns (uint256);\\n\\n    /**\\n     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * IMPORTANT: Beware that changing an allowance with this method brings the risk\\n     * that someone may use both the old and the new allowance by unfortunate\\n     * transaction ordering. One possible solution to mitigate this race\\n     * condition is to first reduce the spender's allowance to 0 and set the\\n     * desired value afterwards:\\n     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729\\n     *\\n     * Emits an {Approval} event.\\n     */\\n    function approve(address spender, uint256 amount) external returns (bool);\\n\\n    /**\\n     * @dev Moves `amount` tokens from `sender` to `recipient` using the\\n     * allowance mechanism. `amount` is then deducted from the caller's\\n     * allowance.\\n     *\\n     * Returns a boolean value indicating whether the operation succeeded.\\n     *\\n     * Emits a {Transfer} event.\\n     */\\n    function transferFrom(\\n        address sender,\\n        address recipient,\\n        uint256 amount\\n    ) external returns (bool);\\n\\n    /**\\n     * @dev Emitted when `value` tokens are moved from one account (`from`) to\\n     * another (`to`).\\n     *\\n     * Note that `value` may be zero.\\n     */\\n    event Transfer(address indexed from, address indexed to, uint256 value);\\n\\n    /**\\n     * @dev Emitted when the allowance of a `spender` for an `owner` is set by\\n     * a call to {approve}. `value` is the new allowance.\\n     */\\n    event Approval(address indexed owner, address indexed spender, uint256 value);\\n}\\n\",\"keccak256\":\"0x027b891937d20ccf213fdb9c31531574256de774bda99d3a70ecef6e1913ed2a\",\"license\":\"MIT\"},\"contracts/interfaces/IVombat.sol\":{\"content\":\"//SPDX-License-Identifier: MIT\\npragma solidity ^0.8.4;\\n\\nimport '@openzeppelin/contracts/token/ERC20/IERC20.sol';\\n\\ninterface IVombat is IERC20 {\\n    function mint(address to, uint256 amount) external;\\n\\n    function burn(uint256 amount) external;\\n\\n    function burnFrom(address account, uint256 amount) external;\\n\\n    function permit(\\n        address owner,\\n        address spender,\\n        uint256 value,\\n        uint256 deadline,\\n        uint8 v,\\n        bytes32 r,\\n        bytes32 s\\n    ) external;\\n}\\n\",\"keccak256\":\"0xe8c04a0b88bda9d7e774107655069d1a52901f025b9abb05cdf814ea969dee82\",\"license\":\"MIT\"},\"contracts/utils/VombatFaucet.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.4;\\n\\nimport '../interfaces/IVombat.sol';\\n\\ncontract VombatFaucet {\\n    uint256 public constant tokenAmount = 12000000000000000000;\\n    uint256 public constant waitTime = 5 minutes;\\n\\n    IVombat public vombat;\\n\\n    mapping(address => uint256) lastAccessTime;\\n\\n    constructor(address _vombat) {\\n        require(_vombat != address(0));\\n        vombat = IVombat(_vombat);\\n    }\\n\\n    function requestTokens() public {\\n        require(allowedToWithdraw(msg.sender));\\n        vombat.mint(msg.sender, tokenAmount);\\n        lastAccessTime[msg.sender] = block.timestamp + waitTime;\\n    }\\n\\n    function allowedToWithdraw(address _address) public view returns (bool) {\\n        if (lastAccessTime[_address] == 0) {\\n            return true;\\n        } else if (block.timestamp >= lastAccessTime[_address]) {\\n            return true;\\n        }\\n        return false;\\n    }\\n}\\n\",\"keccak256\":\"0x611443741f3806bc324f964b220482f5ab282345079c67c0cbe77703d7f99066\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b506040516102fc3803806102fc83398101604081905261002f91610067565b6001600160a01b03811661004257600080fd5b600080546001600160a01b0319166001600160a01b0392909216919091179055610095565b600060208284031215610078578081fd5b81516001600160a01b038116811461008e578182fd5b9392505050565b610258806100a46000396000f3fe608060405234801561001057600080fd5b50600436106100575760003560e01c80632d291cad1461005c578063359cf2b714610084578063bb8493b91461008e578063ccca123b146100b9578063eec7faa1146100d0575b600080fd5b61006f61006a3660046101d0565b6100df565b60405190151581526020015b60405180910390f35b61008c610133565b005b6000546100a1906001600160a01b031681565b6040516001600160a01b03909116815260200161007b565b6100c261012c81565b60405190815260200161007b565b6100c267a688906bd8b0000081565b6001600160a01b03811660009081526001602052604081205461010457506001919050565b6001600160a01b038216600090815260016020526040902054421061012b57506001919050565b506000919050565b61013c336100df565b61014557600080fd5b6000546040516340c10f1960e01b815233600482015267a688906bd8b0000060248201526001600160a01b03909116906340c10f1990604401600060405180830381600087803b15801561019857600080fd5b505af11580156101ac573d6000803e3d6000fd5b5050505061012c426101be91906101fe565b33600090815260016020526040902055565b6000602082840312156101e1578081fd5b81356001600160a01b03811681146101f7578182fd5b9392505050565b6000821982111561021d57634e487b7160e01b81526011600452602481fd5b50019056fea2646970667358221220a48016bcd6efa106ff89aa79037ce00b5e8d8a4ed1dc6760029411fd56cc64c364736f6c63430008040033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100575760003560e01c80632d291cad1461005c578063359cf2b714610084578063bb8493b91461008e578063ccca123b146100b9578063eec7faa1146100d0575b600080fd5b61006f61006a3660046101d0565b6100df565b60405190151581526020015b60405180910390f35b61008c610133565b005b6000546100a1906001600160a01b031681565b6040516001600160a01b03909116815260200161007b565b6100c261012c81565b60405190815260200161007b565b6100c267a688906bd8b0000081565b6001600160a01b03811660009081526001602052604081205461010457506001919050565b6001600160a01b038216600090815260016020526040902054421061012b57506001919050565b506000919050565b61013c336100df565b61014557600080fd5b6000546040516340c10f1960e01b815233600482015267a688906bd8b0000060248201526001600160a01b03909116906340c10f1990604401600060405180830381600087803b15801561019857600080fd5b505af11580156101ac573d6000803e3d6000fd5b5050505061012c426101be91906101fe565b33600090815260016020526040902055565b6000602082840312156101e1578081fd5b81356001600160a01b03811681146101f7578182fd5b9392505050565b6000821982111561021d57634e487b7160e01b81526011600452602481fd5b50019056fea2646970667358221220a48016bcd6efa106ff89aa79037ce00b5e8d8a4ed1dc6760029411fd56cc64c364736f6c63430008040033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 6954,
+        "contract": "contracts/utils/VombatFaucet.sol:VombatFaucet",
+        "label": "vombat",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_contract(IVombat)6301"
+      },
+      {
+        "astId": 6958,
+        "contract": "contracts/utils/VombatFaucet.sol:VombatFaucet",
+        "label": "lastAccessTime",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_mapping(t_address,t_uint256)"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_contract(IVombat)6301": {
+        "encoding": "inplace",
+        "label": "contract IVombat",
+        "numberOfBytes": "20"
+      },
+      "t_mapping(t_address,t_uint256)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => uint256)",
+        "numberOfBytes": "32",
+        "value": "t_uint256"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}

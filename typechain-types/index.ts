@@ -37,6 +37,7 @@ export type { MockProxyRegistry } from "./MockProxyRegistry";
 export type { TestERC1155 } from "./TestERC1155";
 export type { TestERC20 } from "./TestERC20";
 export type { TestERC223 } from "./TestERC223";
+export type { VombatFaucet } from "./VombatFaucet";
 
 export { AccessControl__factory } from "./factories/AccessControl__factory";
 export { IAccessControl__factory } from "./factories/IAccessControl__factory";
@@ -74,3 +75,4 @@ export { MockProxyRegistry__factory } from "./factories/MockProxyRegistry__facto
 export { TestERC1155__factory } from "./factories/TestERC1155__factory";
 export { TestERC20__factory } from "./factories/TestERC20__factory";
 export { TestERC223__factory } from "./factories/TestERC223__factory";
+export { VombatFaucet__factory } from "./factories/VombatFaucet__factory";
