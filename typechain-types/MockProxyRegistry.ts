@@ -17,6 +17,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface MockProxyRegistryInterface extends utils.Interface {
+  contractName: "MockProxyRegistry";
   functions: {
     "owner()": FunctionFragment;
     "proxies(address)": FunctionFragment;
@@ -68,6 +69,7 @@ export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
 
 export interface MockProxyRegistry extends BaseContract {
+  contractName: "MockProxyRegistry";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;

@@ -18,6 +18,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface ChildERC20PresetInterface extends utils.Interface {
+  contractName: "ChildERC20Preset";
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "DOMAIN_SEPARATOR()": FunctionFragment;
@@ -266,6 +267,7 @@ export type TransferEvent = TypedEvent<
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
 export interface ChildERC20Preset extends BaseContract {
+  contractName: "ChildERC20Preset";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;

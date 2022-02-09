@@ -18,6 +18,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface KombatMarketInterface extends utils.Interface {
+  contractName: "KombatMarket";
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "DOMAIN_SEPARATOR()": FunctionFragment;
@@ -231,6 +232,7 @@ export type TokenPricesSetEvent = TypedEvent<
 export type TokenPricesSetEventFilter = TypedEventFilter<TokenPricesSetEvent>;
 
 export interface KombatMarket extends BaseContract {
+  contractName: "KombatMarket";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;

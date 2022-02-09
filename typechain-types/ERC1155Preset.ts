@@ -18,6 +18,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface ERC1155PresetInterface extends utils.Interface {
+  contractName: "ERC1155Preset";
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "DOMAIN_SEPARATOR()": FunctionFragment;
@@ -370,6 +371,7 @@ export type URIEvent = TypedEvent<
 export type URIEventFilter = TypedEventFilter<URIEvent>;
 
 export interface ERC1155Preset extends BaseContract {
+  contractName: "ERC1155Preset";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;

@@ -17,6 +17,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface AccessControlInterface extends utils.Interface {
+  contractName: "AccessControl";
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
@@ -110,6 +111,7 @@ export type RoleRevokedEvent = TypedEvent<
 export type RoleRevokedEventFilter = TypedEventFilter<RoleRevokedEvent>;
 
 export interface AccessControl extends BaseContract {
+  contractName: "AccessControl";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;

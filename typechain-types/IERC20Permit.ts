@@ -18,6 +18,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface IERC20PermitInterface extends utils.Interface {
+  contractName: "IERC20Permit";
   functions: {
     "DOMAIN_SEPARATOR()": FunctionFragment;
     "nonces(address)": FunctionFragment;
@@ -53,6 +54,7 @@ export interface IERC20PermitInterface extends utils.Interface {
 }
 
 export interface IERC20Permit extends BaseContract {
+  contractName: "IERC20Permit";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;

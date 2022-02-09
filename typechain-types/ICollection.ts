@@ -18,6 +18,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface ICollectionInterface extends utils.Interface {
+  contractName: "ICollection";
   functions: {
     "balanceOf(address,uint256)": FunctionFragment;
     "burn(address,uint256,uint256)": FunctionFragment;
@@ -96,6 +97,7 @@ export interface ICollectionInterface extends utils.Interface {
 }
 
 export interface ICollection extends BaseContract {
+  contractName: "ICollection";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;

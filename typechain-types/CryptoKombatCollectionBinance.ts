@@ -19,6 +19,7 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface CryptoKombatCollectionBinanceInterface
   extends utils.Interface {
+  contractName: "CryptoKombatCollectionBinance";
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "DEPOSITOR_ROLE()": FunctionFragment;
@@ -404,6 +405,7 @@ export type URIEvent = TypedEvent<
 export type URIEventFilter = TypedEventFilter<URIEvent>;
 
 export interface CryptoKombatCollectionBinance extends BaseContract {
+  contractName: "CryptoKombatCollectionBinance";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;

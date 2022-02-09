@@ -18,6 +18,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface IERC1155MetadataURIInterface extends utils.Interface {
+  contractName: "IERC1155MetadataURI";
   functions: {
     "balanceOf(address,uint256)": FunctionFragment;
     "balanceOfBatch(address[],uint256[])": FunctionFragment;
@@ -140,6 +141,7 @@ export type URIEvent = TypedEvent<
 export type URIEventFilter = TypedEventFilter<URIEvent>;
 
 export interface IERC1155MetadataURI extends BaseContract {
+  contractName: "IERC1155MetadataURI";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;

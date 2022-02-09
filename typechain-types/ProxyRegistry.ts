@@ -15,6 +15,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface ProxyRegistryInterface extends utils.Interface {
+  contractName: "ProxyRegistry";
   functions: {
     "proxies(address)": FunctionFragment;
   };
@@ -27,6 +28,7 @@ export interface ProxyRegistryInterface extends utils.Interface {
 }
 
 export interface ProxyRegistry extends BaseContract {
+  contractName: "ProxyRegistry";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;

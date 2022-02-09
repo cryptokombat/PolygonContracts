@@ -68,7 +68,15 @@ const config: HardhatUserConfig = {
     },
   },
   etherscan: {
-    apiKey: POLYGONSCAN_API_KEY,
+    apiKey: {
+      mainnet: ETHERSCAN_API_KEY,
+      rinkeby: ETHERSCAN_API_KEY,
+      goerli: ETHERSCAN_API_KEY,
+      bsc: BSCSCAN_API_KEY,
+      bscTestnet: BSCSCAN_API_KEY,
+      polygon: POLYGONSCAN_API_KEY,
+      polygonMumbai: POLYGONSCAN_API_KEY,
+    },
   },
   gasReporter: {
     coinmarketcap: COINMARKETCAP_API_KEY,
@@ -77,7 +85,7 @@ const config: HardhatUserConfig = {
     enabled: false,
   },
   solidity: {
-    version: '0.8.4',
+    version: '0.8.9',
     settings: {
       optimizer: {
         enabled: true,

@@ -19,6 +19,7 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface CryptoKombatCollectionEthereumInterface
   extends utils.Interface {
+  contractName: "CryptoKombatCollectionEthereum";
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "DEPOSITOR_ROLE()": FunctionFragment;
@@ -404,6 +405,7 @@ export type URIEvent = TypedEvent<
 export type URIEventFilter = TypedEventFilter<URIEvent>;
 
 export interface CryptoKombatCollectionEthereum extends BaseContract {
+  contractName: "CryptoKombatCollectionEthereum";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;

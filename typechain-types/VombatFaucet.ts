@@ -17,6 +17,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface VombatFaucetInterface extends utils.Interface {
+  contractName: "VombatFaucet";
   functions: {
     "allowedToWithdraw(address)": FunctionFragment;
     "requestTokens()": FunctionFragment;
@@ -59,6 +60,7 @@ export interface VombatFaucetInterface extends utils.Interface {
 }
 
 export interface VombatFaucet extends BaseContract {
+  contractName: "VombatFaucet";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;

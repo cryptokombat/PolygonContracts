@@ -17,26 +17,29 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export type KombatStructStruct = {
-  user: string;
-  collection: string;
-  heroId: BigNumberish;
-  consumables: BigNumberish[];
-};
+export declare namespace KombatGame {
+  export type KombatStructStruct = {
+    user: string;
+    collection: string;
+    heroId: BigNumberish;
+    consumables: BigNumberish[];
+  };
 
-export type KombatStructStructOutput = [
-  string,
-  string,
-  BigNumber,
-  BigNumber[]
-] & {
-  user: string;
-  collection: string;
-  heroId: BigNumber;
-  consumables: BigNumber[];
-};
+  export type KombatStructStructOutput = [
+    string,
+    string,
+    BigNumber,
+    BigNumber[]
+  ] & {
+    user: string;
+    collection: string;
+    heroId: BigNumber;
+    consumables: BigNumber[];
+  };
+}
 
 export interface KombatGameInterface extends utils.Interface {
+  contractName: "KombatGame";
   functions: {
     "AUTOMATION_ROLE()": FunctionFragment;
     "BASE_BP()": FunctionFragment;
@@ -112,11 +115,16 @@ export interface KombatGameInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "processPVEKombat",
-    values: [BigNumberish, KombatStructStruct, BigNumberish, boolean]
+    values: [BigNumberish, KombatGame.KombatStructStruct, BigNumberish, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "processPVPKombat",
-    values: [BigNumberish, KombatStructStruct, KombatStructStruct, BigNumberish]
+    values: [
+      BigNumberish,
+      KombatGame.KombatStructStruct,
+      KombatGame.KombatStructStruct,
+      BigNumberish
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceRole",
@@ -289,6 +297,7 @@ export type SharesSetEvent = TypedEvent<
 export type SharesSetEventFilter = TypedEventFilter<SharesSetEvent>;
 
 export interface KombatGame extends BaseContract {
+  contractName: "KombatGame";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -349,7 +358,7 @@ export interface KombatGame extends BaseContract {
 
     processPVEKombat(
       kombatId: BigNumberish,
-      player: KombatStructStruct,
+      player: KombatGame.KombatStructStruct,
       arenaId: BigNumberish,
       win: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -357,8 +366,8 @@ export interface KombatGame extends BaseContract {
 
     processPVPKombat(
       kombatId: BigNumberish,
-      winner: KombatStructStruct,
-      loser: KombatStructStruct,
+      winner: KombatGame.KombatStructStruct,
+      loser: KombatGame.KombatStructStruct,
       arenaId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -454,7 +463,7 @@ export interface KombatGame extends BaseContract {
 
   processPVEKombat(
     kombatId: BigNumberish,
-    player: KombatStructStruct,
+    player: KombatGame.KombatStructStruct,
     arenaId: BigNumberish,
     win: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -462,8 +471,8 @@ export interface KombatGame extends BaseContract {
 
   processPVPKombat(
     kombatId: BigNumberish,
-    winner: KombatStructStruct,
-    loser: KombatStructStruct,
+    winner: KombatGame.KombatStructStruct,
+    loser: KombatGame.KombatStructStruct,
     arenaId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -559,7 +568,7 @@ export interface KombatGame extends BaseContract {
 
     processPVEKombat(
       kombatId: BigNumberish,
-      player: KombatStructStruct,
+      player: KombatGame.KombatStructStruct,
       arenaId: BigNumberish,
       win: boolean,
       overrides?: CallOverrides
@@ -567,8 +576,8 @@ export interface KombatGame extends BaseContract {
 
     processPVPKombat(
       kombatId: BigNumberish,
-      winner: KombatStructStruct,
-      loser: KombatStructStruct,
+      winner: KombatGame.KombatStructStruct,
+      loser: KombatGame.KombatStructStruct,
       arenaId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -727,7 +736,7 @@ export interface KombatGame extends BaseContract {
 
     processPVEKombat(
       kombatId: BigNumberish,
-      player: KombatStructStruct,
+      player: KombatGame.KombatStructStruct,
       arenaId: BigNumberish,
       win: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -735,8 +744,8 @@ export interface KombatGame extends BaseContract {
 
     processPVPKombat(
       kombatId: BigNumberish,
-      winner: KombatStructStruct,
-      loser: KombatStructStruct,
+      winner: KombatGame.KombatStructStruct,
+      loser: KombatGame.KombatStructStruct,
       arenaId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -838,7 +847,7 @@ export interface KombatGame extends BaseContract {
 
     processPVEKombat(
       kombatId: BigNumberish,
-      player: KombatStructStruct,
+      player: KombatGame.KombatStructStruct,
       arenaId: BigNumberish,
       win: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -846,8 +855,8 @@ export interface KombatGame extends BaseContract {
 
     processPVPKombat(
       kombatId: BigNumberish,
-      winner: KombatStructStruct,
-      loser: KombatStructStruct,
+      winner: KombatGame.KombatStructStruct,
+      loser: KombatGame.KombatStructStruct,
       arenaId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
