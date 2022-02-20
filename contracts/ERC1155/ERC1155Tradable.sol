@@ -5,7 +5,6 @@ import '@openzeppelin/contracts/utils/Strings.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/access/AccessControl.sol';
 import '@openzeppelin/contracts/token/ERC1155/ERC1155.sol';
-import '@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Burnable.sol';
 
 contract OwnableDelegateProxy {}
 
@@ -19,7 +18,7 @@ contract ProxyRegistry {
  * has create and mint functionality, and supports useful standards from OpenZeppelin,
   like _exists(), name(), symbol(), and totalSupply()
  */
-contract ERC1155Tradable is AccessControl, Ownable, ERC1155, ERC1155Burnable {
+contract ERC1155Tradable is AccessControl, Ownable, ERC1155 {
     bytes32 public constant MINTER_ROLE = keccak256('MINTER_ROLE');
 
     using Strings for string;
@@ -31,6 +30,7 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155, ERC1155Burnable {
     mapping(uint256 => address) public creators;
     mapping(uint256 => uint256) public tokenSupply;
     mapping(uint256 => uint256) public tokenMaxSupply;
+    mapping(uint256 => uint256) public tokenPremintedSupply;
     // Contract name
     string public name;
     // Contract symbol
@@ -87,10 +87,19 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155, ERC1155Burnable {
     }
 
     /**
+     * @dev Returns the preminted quantity for a token ID
+     * @param _id uint256 ID of the token to query
+     * @return amount of token in existence
+     */
+    function premintedSupply(uint256 _id) public view returns (uint256) {
+        return tokenPremintedSupply[_id];
+    }
+
+    /**
      * @dev Will update the proxyRegistryAddress
      * @param _newProxyRegistryAddress New proxyRegistryAddress
      */
-    function setProxyRegistryAddress(address _newProxyRegistryAddress) public onlyAdminOrOwner {
+    function setProxyRegistryAddress(address _newProxyRegistryAddress) external onlyAdminOrOwner {
         proxyRegistryAddress = _newProxyRegistryAddress;
     }
 
@@ -98,20 +107,42 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155, ERC1155Burnable {
      * @dev Will update the base URL of token's URI
      * @param _newBaseMetadataURI New base URL of token's URI
      */
-    function setBaseMetadataURI(string memory _newBaseMetadataURI) public onlyAdminOrOwner {
+    function setBaseMetadataURI(string memory _newBaseMetadataURI) external onlyAdminOrOwner {
         _setBaseMetadataURI(_newBaseMetadataURI);
+    }
+
+    /**
+     * @dev Will update tokenSupply for the given tokenID
+     * @param _id uint256 ID of the token to update
+     * @param _value uint256 amount
+     */
+    function setTotalSupply(uint256 _id, uint256 _value) external onlyAdminOrOwner {
+        require(_exists(_id), 'ERC1155Tradable: !exists');
+        tokenSupply[_id] = _value;
+    }
+
+    /**
+     * @dev Will update tokenMaxSupply for the given tokenID
+     * @param _id uint256 ID of the token to update
+     * @param _value uint256 amount
+     */
+    function setMaxSupply(uint256 _id, uint256 _value) external onlyAdminOrOwner {
+        require(_exists(_id), 'ERC1155Tradable: !exists');
+        tokenMaxSupply[_id] = _value;
     }
 
     /**
      * @dev Creates a new token type and assigns _initial to a sender
      * @param _max max supply allowed
-     * @param _initial Optional amount to supply the first owner
+     * @param _initial initial supply
+     * @param _toMint to mint
      * @param _data Optional data to pass if receiver is contract
      * @return tokenId The newly created token ID
      */
     function create(
         uint256 _max,
         uint256 _initial,
+        uint256 _toMint,
         bytes memory _data
     ) external onlyAdminOrOwner returns (uint256 tokenId) {
         //TODO Need to test lte condition
@@ -120,8 +151,8 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155, ERC1155Burnable {
         _incrementTokenTypeId();
         creators[id] = _msgSender();
 
-        if (_initial != 0) {
-            _mint(_msgSender(), id, _initial, _data);
+        if (_toMint != 0) {
+            _mint(_msgSender(), id, _toMint, _data);
         }
         tokenSupply[id] = _initial;
         tokenMaxSupply[id] = _max;
@@ -131,14 +162,17 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155, ERC1155Burnable {
     /**
      * @dev Creates some amount of tokens type and assigns initials to a sender
      * @param _maxs max supply allowed
-     * @param _initials Optional amount to supply the first owner
+     * @param _initials initial supply
+     * @param _toMint to mint
      */
     function createBatch(
         uint256[] memory _maxs,
         uint256[] memory _initials,
+        uint256[] memory _toMint,
         bytes memory _data
     ) external onlyAdminOrOwner {
         require(_maxs.length == _initials.length, 'ERC1155Tradable: maxs and initials length mismatch');
+        require(_maxs.length == _toMint.length, 'ERC1155Tradable: maxs and toMint length mismatch');
 
         uint256[] memory ids = new uint256[](_maxs.length);
         uint256[] memory quantities = new uint256[](_maxs.length);
@@ -146,9 +180,13 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155, ERC1155Burnable {
         for (uint256 i = 0; i < _maxs.length; i++) {
             uint256 max = _maxs[i];
             uint256 initial = _initials[i];
+            uint256 toMint = _toMint[i];
 
             //TODO Need to test lte condition
-            require(initial <= max, 'ERC1155Tradable: Initial supply cannot be more than max supply');
+            require(
+                initial <= max && toMint <= max,
+                'ERC1155Tradable: Initial supply cannot be more than max supply'
+            );
 
             uint256 tokenId = _getNextTokenID();
             _incrementTokenTypeId();
@@ -158,7 +196,7 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155, ERC1155Burnable {
             tokenMaxSupply[tokenId] = max;
 
             ids[i] = tokenId;
-            quantities[i] = initial;
+            quantities[i] = toMint;
         }
 
         _mintBatch(_msgSender(), ids, quantities, _data);
@@ -205,6 +243,53 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155, ERC1155Burnable {
             tokenSupply[id] = tokenSupply[id] + quantity;
         }
         _mintBatch(_to, _ids, _quantities, _data);
+    }
+
+    /**
+     * @dev Burns some amount of tokens from an address
+     * @param _from        The address to burn tokens from
+     * @param _id          Token ID to burn
+     * @param _quantity    Amount of tokens to burn
+     */
+    function burn(
+        address _from,
+        uint256 _id,
+        uint256 _quantity
+    ) public virtual {
+        require(
+            _from == _msgSender() || isApprovedForAll(_from, _msgSender()),
+            'ERC1155: caller is not owner nor approved'
+        );
+        tokenSupply[_id] = tokenSupply[_id] - _quantity;
+
+        _burn(_from, _id, _quantity);
+    }
+
+    /**
+     * @dev Burn tokens for each id in _ids
+     * @param _from        The address to burn tokens from
+     * @param _ids         Array of ids to burn
+     * @param _quantities  Array of amounts to burn per id
+     */
+    function burnBatch(
+        address _from,
+        uint256[] memory _ids,
+        uint256[] memory _quantities
+    ) public virtual {
+        require(
+            _from == _msgSender() || isApprovedForAll(_from, _msgSender()),
+            'ERC1155: caller is not owner nor approved'
+        );
+        require(_ids.length == _quantities.length, 'ERC1155Tradable: ids and amounts length mismatch');
+
+        for (uint256 i = 0; i < _ids.length; i++) {
+            uint256 id = _ids[i];
+            uint256 quantity = _quantities[i];
+
+            tokenSupply[id] = tokenSupply[id] - quantity;
+        }
+
+        _burnBatch(_from, _ids, _quantities);
     }
 
     /**
