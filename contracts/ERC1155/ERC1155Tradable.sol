@@ -30,7 +30,7 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155 {
     mapping(uint256 => address) public creators;
     mapping(uint256 => uint256) public tokenSupply;
     mapping(uint256 => uint256) public tokenMaxSupply;
-    mapping(uint256 => uint256) public tokenPremintedSupply;
+    mapping(uint256 => uint256) public tokenChildSupply;
     // Contract name
     string public name;
     // Contract symbol
@@ -87,12 +87,12 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155 {
     }
 
     /**
-     * @dev Returns the preminted quantity for a token ID
+     * @dev Returns the child quantity for a token ID
      * @param _id uint256 ID of the token to query
      * @return amount of token in existence
      */
-    function premintedSupply(uint256 _id) public view returns (uint256) {
-        return tokenPremintedSupply[_id];
+    function childSupply(uint256 _id) public view returns (uint256) {
+        return tokenChildSupply[_id];
     }
 
     /**
@@ -132,59 +132,71 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155 {
     }
 
     /**
+     * @dev Will update tokenChildSupply for the given tokenID
+     * @param _id uint256 ID of the token to update
+     * @param _value uint256 amount
+     */
+    function setChildSupply(uint256 _id, uint256 _value) external onlyAdminOrOwner {
+        require(_exists(_id), 'ERC1155Tradable: !exists');
+        tokenChildSupply[_id] = _value;
+    }
+
+    /**
      * @dev Creates a new token type and assigns _initial to a sender
      * @param _max max supply allowed
+     * @param _child child supply
      * @param _initial initial supply
-     * @param _toMint to mint
      * @param _data Optional data to pass if receiver is contract
      * @return tokenId The newly created token ID
      */
     function create(
         uint256 _max,
+        uint256 _child,
         uint256 _initial,
-        uint256 _toMint,
         bytes memory _data
     ) external onlyAdminOrOwner returns (uint256 tokenId) {
-        //TODO Need to test lte condition
-        require(_initial <= _max, 'ERC1155Tradable: Initial supply cannot be more than max supply');
+        require(_child + _initial <= _max, 'ERC1155Tradable: Initial supply cannot be more than max supply');
         uint256 id = _getNextTokenID();
         _incrementTokenTypeId();
         creators[id] = _msgSender();
-
-        if (_toMint != 0) {
-            _mint(_msgSender(), id, _toMint, _data);
-        }
         tokenSupply[id] = _initial;
         tokenMaxSupply[id] = _max;
+        tokenChildSupply[id] = _child;
+
+        if (_initial != 0) {
+            _mint(_msgSender(), id, _initial, _data);
+        }
+
         return id;
     }
 
     /**
      * @dev Creates some amount of tokens type and assigns initials to a sender
      * @param _maxs max supply allowed
+     * @param _originals initial supply
      * @param _initials initial supply
-     * @param _toMint to mint
      */
     function createBatch(
         uint256[] memory _maxs,
+        uint256[] memory _originals,
         uint256[] memory _initials,
-        uint256[] memory _toMint,
         bytes memory _data
     ) external onlyAdminOrOwner {
+        require(_maxs.length == _originals.length, 'ERC1155Tradable: maxs and originals length mismatch');
         require(_maxs.length == _initials.length, 'ERC1155Tradable: maxs and initials length mismatch');
-        require(_maxs.length == _toMint.length, 'ERC1155Tradable: maxs and toMint length mismatch');
 
         uint256[] memory ids = new uint256[](_maxs.length);
         uint256[] memory quantities = new uint256[](_maxs.length);
 
+        bool needMint = false;
+
         for (uint256 i = 0; i < _maxs.length; i++) {
             uint256 max = _maxs[i];
+            uint256 original = _originals[i];
             uint256 initial = _initials[i];
-            uint256 toMint = _toMint[i];
 
-            //TODO Need to test lte condition
             require(
-                initial <= max && toMint <= max,
+                initial + original <= max,
                 'ERC1155Tradable: Initial supply cannot be more than max supply'
             );
 
@@ -194,12 +206,18 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155 {
 
             tokenSupply[tokenId] = initial;
             tokenMaxSupply[tokenId] = max;
+            tokenChildSupply[tokenId] = original;
 
             ids[i] = tokenId;
-            quantities[i] = toMint;
+            quantities[i] = initial;
+            if (initial > 0 && !needMint) {
+                needMint = true;
+            }
         }
 
-        _mintBatch(_msgSender(), ids, quantities, _data);
+        if (needMint) {
+            _mintBatch(_msgSender(), ids, quantities, _data);
+        }
     }
 
     /**

@@ -43,6 +43,6 @@ contract ERC1155Preset is Context, ERC1155Tradable, EIP712 {
      * @return bool whether the token exists
      */
     function exists(uint256 _id) external view returns (bool) {
-        return creators[_id] != address(0);
+        return _exists(_id);
     }
 }

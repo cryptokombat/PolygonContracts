@@ -4,6 +4,8 @@ pragma solidity ^0.8.9;
 import '@openzeppelin/contracts/utils/Context.sol';
 import './ERC1155Preset.sol';
 
+import 'hardhat/console.sol';
+
 contract ChildERC1155Preset is ERC1155Preset {
     bytes32 public constant DEPOSITOR_ROLE = keccak256('DEPOSITOR_ROLE');
 
@@ -36,8 +38,12 @@ contract ChildERC1155Preset is ERC1155Preset {
         for (uint256 i = 0; i < ids.length; i++) {
             uint256 id = ids[i];
             uint256 amount = amounts[i];
-            require(tokenSupply[id] + amount <= tokenMaxSupply[id], '!max');
-            tokenSupply[id] = tokenSupply[id] + amount;
+
+            uint256 supply = tokenSupply[id];
+            uint256 max = tokenMaxSupply[id];
+
+            require(supply + amount <= max, '!max');
+            tokenSupply[id] = supply + amount;
         }
 
         _mintBatch(user, ids, amounts, data);

@@ -5,7 +5,6 @@ import { BigNumber } from 'ethers'
 import { Address } from 'hardhat-deploy/types'
 
 import { TestERC20, KombatGame, CryptoKombatCollectionEthereum, VombatToken } from '../typechain-types'
-import { KombatStructStruct } from '../typechain-types/KombatGame'
 
 const FEE_BASE = BigNumber.from('10000')
 const MINTER_ROLE = ethers.utils.id('MINTER_ROLE')
@@ -52,7 +51,7 @@ context('KombatGame', () => {
 
   describe('#processPVEKombat()', async () => {
     it('should reward correct amounts', async () => {
-      const struct: KombatStructStruct = {
+      const struct: KombatGame.KombatStructStruct = {
         user: deployer,
         collection: ethCollection.address,
         heroId: 1,
