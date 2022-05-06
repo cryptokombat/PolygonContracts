@@ -11,7 +11,10 @@ const MINTER_ROLE = ethers.utils.id('MINTER_ROLE')
 const AUTOMATION_ROLE = ethers.utils.id('AUTOMATION_ROLE')
 
 const setupTest = deployments.createFixture(async ({ deployments, getNamedAccounts, ethers }, options) => {
-  await deployments.fixture()
+  await deployments.fixture('Game')
+
+  console.log('Deploying fixtures...')
+
   const { deployer } = await getNamedAccounts()
   const vombat = (await ethers.getContract('VombatToken', deployer)) as VombatToken
   const game = (await ethers.getContract('KombatGame', deployer)) as KombatGame
@@ -49,6 +52,10 @@ context('KombatGame', () => {
     hre.tracer.nameTags[ethers.constants.AddressZero] = 'Zero'
     hre.tracer.nameTags[deployer] = 'Deployer'
     hre.tracer.nameTags[feeRecipient] = 'FeeRecipient'
+  })
+
+  beforeEach(async () => {
+    await setupTest()
 
     game = await ethers.getContract('KombatGame')
     ethCollection = await ethers.getContract('CryptoKombatCollectionEthereum')

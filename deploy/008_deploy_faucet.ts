@@ -18,6 +18,8 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     log: true,
   })
 
+  const isTest = hre.network.name === 'hardhat' || hre.network.name === 'localhost'
+
   console.log('VombatFaucet deployed successfully: ', faucetContract.address)
 
   if (hre.network.name !== 'hardhat' && hre.network.name !== 'localhost') {

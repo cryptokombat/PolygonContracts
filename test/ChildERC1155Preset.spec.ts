@@ -83,6 +83,21 @@ const getTestCaseName = (index: number, { max, reserved, supply }: Args) => {
   }: NFT with ${max} max supply, ${reserved} reserved supply and ${supply} total supply`
 }
 
+const setupTest = deployments.createFixture(async ({ deployments, getNamedAccounts, ethers }, options) => {
+  await deployments.fixture('CollectionEth')
+
+  console.log('Deploying fixtures...')
+
+  const { deployer } = await getNamedAccounts()
+
+  const collection = await ethers.getContract('CryptoKombatCollectionEthereum', deployer)
+  hre.tracer.nameTags[collection.address] = 'Collection'
+
+  const accounts = await getUnnamedAccounts()
+  const bridge = accounts[0]
+  await collection.grantRole(DEPOSITOR_ROLE, bridge)
+})
+
 describe('ChildERC1155Preset - ERC1155Tradable', () => {
   let deployer: Address
   let bridge: Address
@@ -107,20 +122,14 @@ describe('ChildERC1155Preset - ERC1155Tradable', () => {
   })
 
   beforeEach(async () => {
-    const accounts = await getUnnamedAccounts()
+    await setupTest()
 
-    const ProxyContract = await ethers.getContractFactory('MockProxyRegistry')
-    const proxy = await ProxyContract.deploy()
-
-    const CollectionContract = await ethers.getContractFactory('CryptoKombatCollectionEthereum')
-    collection = (await CollectionContract.deploy('', proxy.address)) as CryptoKombatCollectionEthereum
+    collection = await ethers.getContract('CryptoKombatCollectionEthereum')
 
     // setup bridge
+    const accounts = await getUnnamedAccounts()
     bridge = accounts[0]
     connectedBridge = collection.connect(await ethers.getSigner(bridge))
-    await collection.grantRole(DEPOSITOR_ROLE, bridge)
-
-    hre.tracer.nameTags[collection.address] = 'Collection'
   })
 
   CASES.forEach((args, index) => {

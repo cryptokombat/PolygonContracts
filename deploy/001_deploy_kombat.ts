@@ -15,9 +15,11 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     log: true,
   })
 
-  console.log('KombatToken deployed successfully: ', kombat.address)
+  const isTest = hre.network.name === 'hardhat' || hre.network.name === 'localhost'
 
-  if (hre.network.name !== 'hardhat' && hre.network.name !== 'localhost') {
+  if (!isTest) console.log('KombatToken deployed successfully: ', kombat.address)
+
+  if (!isTest) {
     try {
       console.log('Waiting to verify...')
 
@@ -31,10 +33,8 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     } catch (err) {
       console.log(err)
     }
-  } else {
-    console.log('Verification skipped...')
   }
-  console.log('Done')
+  if (!isTest) console.log('Done')
 }
 
 export default func
