@@ -2,5 +2,6 @@
   "extension": ["ts"],
   "spec": "./test/**/*.spec.ts",
   "require": "ts-node/register/files",
-  "timeout": 20000
+  "timeout": 20000,
+  "reporter": "mochawesome"
 }

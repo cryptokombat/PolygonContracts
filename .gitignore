@@ -9,3 +9,4 @@ coverage
 coverage.json
 yarn-error.log
 typechain-types
+mochawesome-report
