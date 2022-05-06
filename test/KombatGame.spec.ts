@@ -24,7 +24,12 @@ const setupTest = deployments.createFixture(async ({ deployments, getNamedAccoun
 
   await game.grantRole(AUTOMATION_ROLE, deployer)
 
-  await collection.createBatch([100, 100, 100, 100], [100, 100, 100, 100], ethers.constants.HashZero)
+  await collection.createBatch(
+    [100, 100, 100, 100],
+    [0, 0, 0, 0],
+    [100, 100, 100, 100],
+    ethers.constants.HashZero
+  )
 })
 
 context('KombatGame', () => {
