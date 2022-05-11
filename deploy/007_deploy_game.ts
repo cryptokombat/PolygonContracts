@@ -1,6 +1,5 @@
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { DeployFunction } from 'hardhat-deploy/types'
-import { getChainlinkConfig, getCollectionAddress } from '../src/config'
 import { sleep } from '../src/utils'
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
@@ -55,4 +54,5 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 }
 
 export default func
-func.tags = ['Mainnet', 'Testnet', 'Game']
+func.tags = ['Game']
+func.dependencies = ['Market']

@@ -3,11 +3,11 @@ import { DeployFunction } from 'hardhat-deploy/types'
 import { sleep } from '../src/utils'
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  const { deployments, getNamedAccounts, getChainId, run, ethers } = hre
+  const { deployments, getNamedAccounts, run } = hre
   const { deploy } = deployments
 
   const { deployer } = await getNamedAccounts()
-  const uri = 'https://uat-polygon-api.cryptokombat.com/consumables/'
+  const uri = 'https://api-staging.cryptokombat.com/consumables/'
   const proxy = '0x207Fa8Df3a17D96Ca7EA4f2893fcdCb78a304101'
 
   const args = [uri, proxy]
@@ -42,4 +42,4 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 }
 
 export default func
-func.tags = ['Mainnet', 'Testnet', 'Consumables', 'Market', 'Game']
+func.tags = ['Consumables']
