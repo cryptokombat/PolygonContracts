@@ -11,6 +11,10 @@ import 'solidity-coverage'
 import { HardhatUserConfig } from 'hardhat/config'
 
 const INFURA_API_KEY = process.env.INFURA_API_KEY || ''
+
+const ALCHEMY_API_KEY_MUMBAI = process.env.ALCHEMY_API_KEY_MUMBAI || ''
+const ALCHEMY_API_KEY_POLYGON = process.env.ALCHEMY_API_KEY_POLYGON || ''
+
 const MAINNET_DEPLOYER_PK = process.env.MAINNET_DEPLOYER_PK || ''
 const TESTNET_DEPLOYER_PK = process.env.TESTNET_DEPLOYER_PK || ''
 
@@ -55,7 +59,7 @@ const config: HardhatUserConfig = {
       accounts: [MAINNET_DEPLOYER_PK],
     },
     mumbai: {
-      url: `https://rpc-mumbai.maticvigil.com`,
+      url: `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_API_KEY_MUMBAI}`,
       saveDeployments: true,
       accounts: [TESTNET_DEPLOYER_PK],
     },
