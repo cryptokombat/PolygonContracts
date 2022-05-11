@@ -229,12 +229,12 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155 {
         uint256 _id,
         uint256 _quantity,
         bytes memory _data
-    ) public onlyMinter {
+    ) public virtual onlyMinter {
         require(_to != address(0), 'ERC1155Tradable: mint to the zero address');
 
         _checkMintable(_id, _quantity);
 
-        _totalSupply[_id] = _totalSupply[_id] + _quantity;
+        _totalSupply[_id] += _quantity;
 
         _mint(_to, _id, _quantity, _data);
     }
@@ -251,7 +251,7 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155 {
         uint256[] memory _ids,
         uint256[] memory _quantities,
         bytes memory _data
-    ) public onlyMinter {
+    ) public virtual onlyMinter {
         require(_to != address(0), 'ERC1155Tradable: mint to the zero address');
         require(_ids.length == _quantities.length, 'ERC1155Tradable: arrays length mismatch');
 
@@ -261,7 +261,7 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155 {
 
             _checkMintable(id, quantity);
 
-            _totalSupply[id] = _totalSupply[id] + quantity;
+            _totalSupply[id] += quantity;
         }
         _mintBatch(_to, _ids, _quantities, _data);
     }
@@ -284,7 +284,7 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155 {
 
         _checkBurnable(_id, _quantity);
 
-        _totalSupply[_id] = _totalSupply[_id] - _quantity;
+        _totalSupply[_id] -= _quantity;
 
         _burn(_from, _id, _quantity);
     }
@@ -312,7 +312,7 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155 {
 
             _checkBurnable(id, quantity);
 
-            _totalSupply[id] = _totalSupply[id] - quantity;
+            _totalSupply[id] -= quantity;
         }
 
         _burnBatch(_from, _ids, _quantities);
