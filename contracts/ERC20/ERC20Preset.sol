@@ -14,15 +14,24 @@ contract ERC20Preset is AccessControl, ERC20Burnable, ERC20Permit {
         _setupRole(MINTER_ROLE, _msgSender());
     }
 
-    function mint(address to, uint256 amount) public virtual {
-        require(hasRole(MINTER_ROLE, _msgSender()), '!access');
-        _mint(to, amount);
-    }
-
     function recoverToken(address token, uint256 amount) external virtual {
         require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), '!access');
         require(IERC20(token).balanceOf(address(this)) >= amount, '!balance');
         IERC20(token).transfer(_msgSender(), amount);
+    }
+
+    function _msgSender() internal view override returns (address sender) {
+        if (msg.sender == address(this)) {
+            bytes memory array = msg.data;
+            uint256 index = msg.data.length;
+            assembly {
+                // Load the 32 bytes word from memory with the address on the lower 20 bytes, and mask those.
+                sender := and(mload(add(array, index)), 0xffffffffffffffffffffffffffffffffffffffff)
+            }
+        } else {
+            sender = msg.sender;
+        }
+        return sender;
     }
 
     function _beforeTokenTransfer(
