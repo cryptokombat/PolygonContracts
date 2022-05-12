@@ -32,6 +32,11 @@ const config: HardhatUserConfig = {
       saveDeployments: true,
       accounts: [MAINNET_DEPLOYER_PK],
     },
+    ropsten: {
+      url: `https://ropsten.infura.io/v3/${INFURA_API_KEY}`,
+      saveDeployments: true,
+      accounts: [TESTNET_DEPLOYER_PK],
+    },
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/${INFURA_API_KEY}`,
       saveDeployments: true,
@@ -39,6 +44,11 @@ const config: HardhatUserConfig = {
     },
     kovan: {
       url: `https://kovan.infura.io/v3/${INFURA_API_KEY}`,
+      saveDeployments: true,
+      accounts: [TESTNET_DEPLOYER_PK],
+    },
+    goerli: {
+      url: `https://goerli.infura.io/v3/${INFURA_API_KEY}`,
       saveDeployments: true,
       accounts: [TESTNET_DEPLOYER_PK],
     },
@@ -74,7 +84,9 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: {
       mainnet: ETHERSCAN_API_KEY,
+      ropsten: ETHERSCAN_API_KEY,
       rinkeby: ETHERSCAN_API_KEY,
+      kovan: ETHERSCAN_API_KEY,
       goerli: ETHERSCAN_API_KEY,
       bsc: BSCSCAN_API_KEY,
       bscTestnet: BSCSCAN_API_KEY,

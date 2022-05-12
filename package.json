@@ -25,9 +25,12 @@
     "flatten": "hardhat flatten",
     "test": "hardhat test",
     "setup": "hardhat run",
+    "fetch-collection": "hardhat run ./scripts/fetch-collection-supply.ts",
+    "fetch-current": "hardhat run ./scripts/fetch-current-supply.ts",
     "coverage": "hardhat coverage"
   },
   "devDependencies": {
+    "@0xsequence/multicall": "^0.37.1",
     "@nomiclabs/hardhat-etherscan": "^3.0.3",
     "@openzeppelin/contracts": "^4.5.0",
     "@openzeppelin/contracts-upgradeable": "^4.5.2",

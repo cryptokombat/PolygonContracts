@@ -18,7 +18,7 @@ async function main() {
 
   if (supply.eq(0)) {
     console.log('[Token] Minting new tokens...')
-    await kombatInstance.mint(deployer, tokenToWei(1000, 8))
+    //await kombatInstance.mint(deployer, tokenToWei(1000, 8))
     await vombatInstance.mint(deployer, tokenToWei(1000))
   } else {
     console.log('[Token] Minting skipped...')
