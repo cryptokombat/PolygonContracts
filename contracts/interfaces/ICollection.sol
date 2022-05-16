@@ -6,6 +6,10 @@ interface ICollection {
 
     function maxSupply(uint256 _id) external view returns (uint256);
 
+    function reservedSupply(uint256 _id) external view returns (uint256);
+
+    function bridgedSupply(uint256 _id) external view returns (uint256);
+
     function balanceOf(address account, uint256 id) external view returns (uint256);
 
     function exists(uint256 _id) external view returns (bool);
