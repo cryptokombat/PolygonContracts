@@ -1,75 +1,93 @@
 import { expect } from './chai-setup'
-import hre, { getNamedAccounts, getUnnamedAccounts, ethers, deployments } from 'hardhat'
+import hre, { ethers, deployments } from 'hardhat'
 
 import { BigNumber } from 'ethers'
 import { Address } from 'hardhat-deploy/types'
 
-import { TestERC20, KombatGame, CryptoKombatCollectionEthereum, VombatToken } from '../typechain-types'
+import { KombatGame, CryptoKombatCollectionEthereum, VombatToken } from '../typechain-types'
 
 const FEE_BASE = BigNumber.from('10000')
 const MINTER_ROLE = ethers.utils.id('MINTER_ROLE')
 const AUTOMATION_ROLE = ethers.utils.id('AUTOMATION_ROLE')
 
-const setupTest = deployments.createFixture(async ({ deployments, getNamedAccounts, ethers }, options) => {
-  await deployments.fixture('Game')
+type SetupParams = {
+  deployer: Address
+  treasure: Address
+  alice: Address
+  bob: Address
+  vombat: VombatToken
+  game: KombatGame
+  collection: CryptoKombatCollectionEthereum
+}
 
-  console.log('Deploying fixtures...')
+const setupTest = deployments.createFixture<SetupParams, unknown>(
+  async ({ deployments, getNamedAccounts, getUnnamedAccounts, ethers }, options) => {
+    await deployments.fixture('Game')
 
-  const { deployer } = await getNamedAccounts()
-  const vombat = (await ethers.getContract('VombatToken', deployer)) as VombatToken
-  const game = (await ethers.getContract('KombatGame', deployer)) as KombatGame
-  const collection = (await ethers.getContract(
-    'CryptoKombatCollectionEthereum',
-    deployer
-  )) as CryptoKombatCollectionEthereum
+    // console.log('Deploying fixtures...')
 
-  await vombat.grantRole(MINTER_ROLE, game.address)
-
-  await game.grantRole(AUTOMATION_ROLE, deployer)
-
-  await collection.createBatch(
-    [100, 100, 100, 100],
-    [0, 0, 0, 0],
-    [100, 100, 100, 100],
-    ethers.constants.HashZero
-  )
-})
-
-context('KombatGame', () => {
-  let deployer: Address
-  let feeRecipient: Address
-  let game: KombatGame
-  let ethCollection: CryptoKombatCollectionEthereum
-
-  before(async () => {
-    await setupTest()
-
-    deployer = (await getNamedAccounts()).deployer
+    const { deployer } = await getNamedAccounts()
     const accounts = await getUnnamedAccounts()
-
-    feeRecipient = accounts[0]
+    const treasure = accounts[0]
+    const alice = accounts[1]
+    const bob = accounts[2]
 
     hre.tracer.nameTags[ethers.constants.AddressZero] = 'Zero'
     hre.tracer.nameTags[deployer] = 'Deployer'
-    hre.tracer.nameTags[feeRecipient] = 'FeeRecipient'
-  })
+    hre.tracer.nameTags[treasure] = 'Treasure'
+    hre.tracer.nameTags[alice] = 'Alice'
+    hre.tracer.nameTags[bob] = 'Bob'
+
+    const vombat = (await ethers.getContract('VombatToken', deployer)) as VombatToken
+    const game = (await ethers.getContract('KombatGame', deployer)) as KombatGame
+    const collection = (await ethers.getContract(
+      'CryptoKombatCollectionEthereum',
+      deployer
+    )) as CryptoKombatCollectionEthereum
+
+    hre.tracer.nameTags[vombat.address] = 'VOMBAT'
+    hre.tracer.nameTags[game.address] = 'Game'
+    hre.tracer.nameTags[collection.address] = 'Collection'
+
+    await vombat.grantRole(MINTER_ROLE, game.address)
+
+    await game.grantRole(AUTOMATION_ROLE, deployer)
+
+    await collection.createBatch(
+      [100, 100, 100, 100],
+      [0, 0, 0, 0],
+      [100, 100, 100, 100],
+      ethers.constants.HashZero
+    )
+
+    return {
+      deployer,
+      treasure,
+      alice,
+      bob,
+      vombat,
+      game,
+      collection,
+    }
+  }
+)
+
+context('KombatGame', () => {
+  let _: SetupParams
 
   beforeEach(async () => {
-    await setupTest()
-
-    game = await ethers.getContract('KombatGame')
-    ethCollection = await ethers.getContract('CryptoKombatCollectionEthereum')
+    _ = await setupTest()
   })
 
   describe('#processPVEKombat()', async () => {
     it('should reward correct amounts', async () => {
       const struct: KombatGame.KombatStructStruct = {
-        user: deployer,
-        collection: ethCollection.address,
+        user: _.deployer,
+        collection: _.collection.address,
         heroId: 1,
         consumables: [],
       }
-      await game.processPVEKombat(1, struct, 0, true)
+      await _.game.processPVEKombat(1, struct, 0, true)
     })
   })
 })
