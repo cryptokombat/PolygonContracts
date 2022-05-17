@@ -1,39 +1,64 @@
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { DeployFunction } from 'hardhat-deploy/types'
-import { sleep } from '../src/utils'
+import { sleep, tokenToWei } from '../src/utils'
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  const { deployments, getNamedAccounts, getChainId, run } = hre
+  const { deployments, getNamedAccounts, run } = hre
   const { deploy } = deployments
 
-  const { deployer } = await getNamedAccounts()
+  const { deployer, gameTreasure } = await getNamedAccounts()
 
   const vombat = await hre.ethers.getContract('VombatToken')
   const collectionEth = await hre.ethers.getContract('CryptoKombatCollectionEthereum')
   const collectionBsc = await hre.ethers.getContract('CryptoKombatCollectionBinance')
   const consumables = await hre.ethers.getContract('CryptoKombatConsumables')
-  const arena = hre.ethers.constants.AddressZero
-  const stakign = hre.ethers.constants.AddressZero
+
+  const rewardAmount = tokenToWei(1)
+  const addressZero = hre.ethers.constants.AddressZero
+  const collectionLocation = addressZero
+  const stakingContract = addressZero
 
   const args = [
     vombat.address,
-    deployer,
+    rewardAmount,
+    6000,
+    3000,
+    1000,
+    stakingContract,
+    gameTreasure,
     collectionEth.address,
     collectionBsc.address,
     consumables.address,
-    arena,
-    stakign,
+    collectionLocation,
   ]
 
   const gameContract = await deploy('KombatGame', {
     from: deployer,
-    args,
+    args: [],
+    proxy: {
+      proxyContract: 'OptimizedTransparentProxy',
+      execute: {
+        methodName: 'initialize',
+        args,
+      },
+    },
     log: true,
   })
 
   const isTest = hre.network.name === 'hardhat' || hre.network.name === 'localhost'
 
-  if (!isTest) console.log('Game deployed successfully: ', gameContract.address)
+  const proxyAdminContract = await hre.ethers.getContract('DefaultProxyAdmin')
+
+  // await hre.ethernal.push({
+  //   name: 'KombatGame',
+  //   address: gameContract.address,
+  // })
+
+  if (!isTest) {
+    console.log(`Default Proxy Admin [${proxyAdminContract.address}]`)
+    console.log(`Kombat Game Proxy   [${gameContract.address}]`)
+    console.log(`Kombat Game Impl    [${gameContract.implementation}]`)
+  }
 
   if (!isTest) {
     try {
@@ -42,8 +67,9 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       await sleep(25000)
 
       await run('verify:verify', {
-        address: gameContract.address,
-        constructorArguments: args,
+        address: gameContract.implementation,
+        constructorArguments: [],
+        contract: 'contracts/upgradable/game/KombatGame.sol:KombatGame',
       })
     } catch (err) {
       console.log(err)

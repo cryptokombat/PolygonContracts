@@ -12,12 +12,32 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const vombat = await deploy('VombatToken', {
     from: deployer,
     args,
+    proxy: {
+      proxyContract: 'OptimizedTransparentProxy',
+      methodName: 'initialize',
+    },
     log: true,
   })
 
+  const proxyAdminContract = await hre.ethers.getContract('DefaultProxyAdmin')
+
   const isTest = hre.network.name === 'hardhat' || hre.network.name === 'localhost'
 
-  if (!isTest) console.log('VombatToken deployed successfully: ', vombat.address)
+  // await hre.ethernal.push({
+  //   name: 'DefaultProxyAdmin',
+  //   address: proxyAdminContract.address,
+  // })
+
+  // await hre.ethernal.push({
+  //   name: 'VombatToken',
+  //   address: vombat.address,
+  // })
+
+  if (!isTest) {
+    console.log(`Default Proxy Admin [${proxyAdminContract.address}]`)
+    console.log(`Vombat Token Proxy  [${vombat.address}]`)
+    console.log(`Vombat Token Impl   [${vombat.implementation}]`)
+  }
 
   if (!isTest) {
     try {
@@ -26,9 +46,9 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       await sleep(25000)
 
       await run('verify:verify', {
-        address: vombat.address,
-        constructorArguments: args,
-        contract: 'contracts/ERC20/VombatToken.sol:VombatToken',
+        address: vombat.implementation,
+        constructorArguments: [],
+        contract: 'contracts/upgradable/ERC20/VombatToken.sol:VombatToken',
       })
     } catch (err) {
       console.log(err)
