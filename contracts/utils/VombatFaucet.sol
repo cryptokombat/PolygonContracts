@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import '../interfaces/IVombat.sol';
+import '../interfaces/IRewardToken.sol';
 
 contract VombatFaucet {
     uint256 public constant tokenAmount = 12000000000000000000;
     uint256 public constant waitTime = 5 minutes;
 
-    IVombat public vombat;
+    IRewardToken public vombat;
 
     mapping(address => uint256) lastAccessTime;
 
     constructor(address _vombat) {
         require(_vombat != address(0));
-        vombat = IVombat(_vombat);
+        vombat = IRewardToken(_vombat);
     }
 
     function requestTokens() public {

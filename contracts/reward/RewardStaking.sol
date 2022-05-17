@@ -8,7 +8,6 @@ import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 import '@openzeppelin/contracts/utils/math/Math.sol';
 
-import '../interfaces/IVombat.sol';
 import '../interfaces/IRewardStaking.sol';
 
 contract RewardStaking is Context, Ownable, EIP712, IRewardStaking {
