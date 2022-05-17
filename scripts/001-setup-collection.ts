@@ -19,7 +19,7 @@ async function setupCollection(collectionName: string, network: string): Promise
     const supply = await collection.maxSupply(1)
     if (supply.eq(0)) {
       console.log(`[${collectionName}] Creating new tokens...`)
-      //await collection.createBatch(payload.max, payload.reserved, payload.mint, ethers.constants.HashZero)
+      await collection.createBatch(payload.max, payload.reserved, payload.mint, ethers.constants.HashZero)
     } else {
       console.log(`[${collectionName}] Creating skipped...`)
     }

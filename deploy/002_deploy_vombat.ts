@@ -41,7 +41,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   if (!isTest) {
     try {
-      console.log('Waiting to verify...')
+      console.log('Waiting to verify implementation...')
 
       await sleep(25000)
 
@@ -50,8 +50,8 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
         constructorArguments: [],
         contract: 'contracts/upgradable/ERC20/VombatToken.sol:VombatToken',
       })
-    } catch (err) {
-      console.log(err)
+    } catch (err: any) {
+      console.log(err.message)
     }
   }
 

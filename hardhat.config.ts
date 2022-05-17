@@ -105,6 +105,9 @@ const config: HardhatUserConfig = {
     gameTreasure: {
       default: 2,
     },
+    automation: {
+      default: 3,
+    },
   },
   etherscan: {
     apiKey: {

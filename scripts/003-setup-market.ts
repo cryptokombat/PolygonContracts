@@ -2,6 +2,7 @@ import hre from 'hardhat'
 
 import { getCollectionStorageName, getMarketPayload } from '../src/config'
 import { getCurrentData } from '../src/json'
+import { KombatMarket } from '../typechain-types'
 
 async function setupCollection(collectionName: string, prefix: string): Promise<void> {
   const { ethers, getNamedAccounts, getChainId } = hre
@@ -12,7 +13,7 @@ async function setupCollection(collectionName: string, prefix: string): Promise<
   const chainId = await getChainId()
 
   const collection = await ethers.getContract(collectionName, signer)
-  const market = await ethers.getContract('KombatMarket', signer)
+  const market = (await ethers.getContract('KombatMarket', signer)) as KombatMarket
 
   console.log(`[${collectionName}] Collection loaded at:`, collection.address)
   console.log(`[${collectionName}] Market loaded at:`, market.address)
@@ -23,22 +24,22 @@ async function setupCollection(collectionName: string, prefix: string): Promise<
     const payload = getMarketPayload(data)
 
     console.log(`[${collectionName}] Setting token prices...`)
-    console.log('ids', payload.ids)
-    console.log('prices', payload.prices)
+    //console.log('ids', payload.ids)
+    //console.log('prices', payload.prices)
 
-    //await market.setTokenPrices(collection.address, payload.ids, payload.prices)
+    await market.setPrice(collection.address, payload.ids, payload.prices)
   } catch (err: any) {
     console.log('[Error] Failed to load collection data:', err.message)
   }
 
   console.log(`[${collectionName}] Setting minter role for market...`)
-  //await collection.grantRole(minterRole, market.address)
+  await collection.grantRole(minterRole, market.address)
 }
 
 async function main() {
   await setupCollection('CryptoKombatCollectionEthereum', 'ETH')
   await setupCollection('CryptoKombatCollectionBinance', 'BSC')
-  await setupCollection('CryptoKombatConsumables', 'CONS')
+  //await setupCollection('CryptoKombatConsumables', 'CONS')
 }
 
 main()

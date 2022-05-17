@@ -277,7 +277,7 @@ export async function getCollectionStorageName(chainId: string, prefix: string) 
 
 export async function getEthRootNetworkName(childId: string): Promise<string> {
   const networkId = parseInt(childId) as NetworkID
-  return getRootCollectionNetworkName(networkId, NetworkID.MAINNET, NetworkID.GOERLI)
+  return getRootCollectionNetworkName(networkId, NetworkID.MAINNET, NetworkID.ROPSTEN)
 }
 
 export async function getBscRootNetworkName(childId: string): Promise<string> {

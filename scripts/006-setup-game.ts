@@ -4,7 +4,7 @@ import { VombatToken, KombatGame } from '../typechain-types'
 
 async function main() {
   const { getNamedAccounts, ethers } = hre
-  const { deployer } = await getNamedAccounts()
+  const { deployer, automation } = await getNamedAccounts()
   const signer = await ethers.getSigner(deployer)
 
   const vombatInstance = (await ethers.getContract('VombatToken', signer)) as VombatToken
@@ -19,8 +19,8 @@ async function main() {
   console.log(`[Vombat] Setting minter role for [KombatGame]:'${gameInstance.address}'`)
   await vombatInstance.grantRole(minterRole, gameInstance.address)
 
-  console.log(`[Game] Setting automation role for [Backend]:'${deployer}'`)
-  await gameInstance.grantRole(automationRole, deployer)
+  console.log(`[Game] Setting automation role for [Backend]:'${automation}'`)
+  await gameInstance.grantRole(automationRole, automation)
 }
 
 main()

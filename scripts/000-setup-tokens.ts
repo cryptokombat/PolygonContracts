@@ -14,7 +14,7 @@ async function main() {
   console.log('KombatToken instance loaded at %s', kombatInstance.address)
   console.log('VombatToken instance loaded at %s', vombatInstance.address)
 
-  const supply = await kombatInstance.totalSupply()
+  const supply = await vombatInstance.totalSupply()
 
   if (supply.eq(0)) {
     console.log('[Token] Minting new tokens...')
