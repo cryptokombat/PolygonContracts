@@ -3,9 +3,11 @@ pragma solidity ^0.8.9;
 
 import '@openzeppelin/contracts/utils/Context.sol';
 import '@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol';
+
+import '../common/ContextMixin.sol';
 import './ERC1155Tradable.sol';
 
-contract ERC1155Preset is Context, ERC1155Tradable, EIP712 {
+contract ERC1155Preset is Context, ContextMixin, ERC1155Tradable, EIP712 {
     constructor(
         string memory name,
         string memory symbol,
@@ -16,17 +18,7 @@ contract ERC1155Preset is Context, ERC1155Tradable, EIP712 {
     }
 
     function _msgSender() internal view override returns (address sender) {
-        if (msg.sender == address(this)) {
-            bytes memory array = msg.data;
-            uint256 index = msg.data.length;
-            assembly {
-                // Load the 32 bytes word from memory with the address on the lower 20 bytes, and mask those.
-                sender := and(mload(add(array, index)), 0xffffffffffffffffffffffffffffffffffffffff)
-            }
-        } else {
-            sender = msg.sender;
-        }
-        return sender;
+        return ContextMixin.msgSender();
     }
 
     /**

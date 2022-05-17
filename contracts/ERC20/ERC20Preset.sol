@@ -7,7 +7,9 @@ import '@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 
-contract ERC20Preset is AccessControl, ERC20Burnable, ERC20Permit {
+import '../common/ContextMixin.sol';
+
+contract ERC20Preset is AccessControl, ContextMixin, ERC20Burnable, ERC20Permit {
     using SafeERC20 for IERC20;
 
     bytes32 public constant MINTER_ROLE = keccak256('MINTER_ROLE');
@@ -23,17 +25,7 @@ contract ERC20Preset is AccessControl, ERC20Burnable, ERC20Permit {
     }
 
     function _msgSender() internal view override returns (address sender) {
-        if (msg.sender == address(this)) {
-            bytes memory array = msg.data;
-            uint256 index = msg.data.length;
-            assembly {
-                // Load the 32 bytes word from memory with the address on the lower 20 bytes, and mask those.
-                sender := and(mload(add(array, index)), 0xffffffffffffffffffffffffffffffffffffffff)
-            }
-        } else {
-            sender = msg.sender;
-        }
-        return sender;
+        return ContextMixin.msgSender();
     }
 
     function _beforeTokenTransfer(
