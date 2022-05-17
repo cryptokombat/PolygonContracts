@@ -1,5 +1,4 @@
 import { NomicLabsHardhatPluginError } from 'hardhat/plugins'
-import { arrayRange, tokenToWei } from './utils'
 
 export enum NetworkID {
   MAINNET = 1,
@@ -23,6 +22,9 @@ export enum NetworkID {
   POLYGON_MUMBAI = 80001,
   // Arbitrum
   //ARBITRUM_ONE = 42161,
+  //Hardhat
+  HARDHAT = 31337,
+  GANACHE = 1337,
 }
 
 export interface CollectionSupplyData {
@@ -45,7 +47,7 @@ export enum HeroEdition {
   COMMON,
 }
 
-const collectionAddress: { [networkID in NetworkID]: string | undefined } = {
+const collectionAddress: { [networkID in NetworkID]?: string | undefined } = {
   [NetworkID.MAINNET]: '0xD0f27dfa54FbF80b823a63470C0e693AE4A626b8',
   [NetworkID.ROPSTEN]: '0xe46a083b0710082B3E34D299F18FE22Ce78aC0f4',
   [NetworkID.RINKEBY]: '0xea0144115c9F722f26963aCC6d564Cee8Bd77F76',
@@ -57,7 +59,7 @@ const collectionAddress: { [networkID in NetworkID]: string | undefined } = {
   [NetworkID.POLYGON_MUMBAI]: undefined,
 }
 
-const multicallAddress: { [networkID in NetworkID]: string | undefined } = {
+const multicallAddress: { [networkID in NetworkID]?: string | undefined } = {
   [NetworkID.MAINNET]: '0xeefba1e63905ef1d7acba5a8513c70307c1ce441',
   [NetworkID.ROPSTEN]: '0x53c43764255c17bd724f74c4ef150724ac50a3ed',
   [NetworkID.RINKEBY]: '0x42ad527de7d4e9d9d011ac45b31d8551f8fe9821',
@@ -298,6 +300,51 @@ async function getRootCollectionNetworkName(
       `The root collection network is not available for this network. ChainID: ${child}.`
     )
   }
+}
+
+// ------------- Collection Configuration --------------------------------
+export interface CollectionConfig {
+  proxy721: string
+  proxy1155: string
+  api: string
+}
+
+const networkIDtoCollectionConfig: { [networkID in NetworkID]?: CollectionConfig } = {
+  [NetworkID.POLYGON]: {
+    proxy721: '0x58807baD0B376efc12F5AD86aAc70E78ed67deaE',
+    proxy1155: '0x207Fa8Df3a17D96Ca7EA4f2893fcdCb78a304101',
+    api: 'https://api-polygon.cryptokombat.com',
+  },
+  [NetworkID.POLYGON_MUMBAI]: {
+    proxy721: '0x58807baD0B376efc12F5AD86aAc70E78ed67deaE',
+    proxy1155: '0x207Fa8Df3a17D96Ca7EA4f2893fcdCb78a304101',
+    api: 'https://api-staging.cryptokombat.com',
+  },
+  [NetworkID.HARDHAT]: {
+    proxy721: '0x58807baD0B376efc12F5AD86aAc70E78ed67deaE',
+    proxy1155: '0x207Fa8Df3a17D96Ca7EA4f2893fcdCb78a304101',
+    api: 'https://api-staging.cryptokombat.com',
+  },
+  [NetworkID.GANACHE]: {
+    proxy721: '0x58807baD0B376efc12F5AD86aAc70E78ed67deaE',
+    proxy1155: '0x207Fa8Df3a17D96Ca7EA4f2893fcdCb78a304101',
+    api: 'https://api-staging.cryptokombat.com',
+  },
+}
+
+export async function getCollectionConfig(networkId: string): Promise<CollectionConfig> {
+  const chainID = parseInt(networkId) as NetworkID
+
+  const config = networkIDtoCollectionConfig[chainID]
+
+  if (config === undefined) {
+    throw new NomicLabsHardhatPluginError(
+      'Collection Configuration',
+      `The collection config could not be found for this network. ChainID: ${chainID}.`
+    )
+  }
+
+  return config
 }
 
 //------------- Chainlink Configuration --------------------------------

@@ -1,16 +1,17 @@
 import { HardhatRuntimeEnvironment } from 'hardhat/types'
 import { DeployFunction } from 'hardhat-deploy/types'
 import { sleep } from '../src/utils'
+import { getCollectionConfig } from '../src/config'
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
-  const { deployments, getNamedAccounts, run } = hre
+  const { deployments, getNamedAccounts, run, getChainId } = hre
   const { deploy } = deployments
 
   const { deployer } = await getNamedAccounts()
-  const uri = 'https://api-staging.cryptokombat.com/consumables/'
-  const proxy = '0x207Fa8Df3a17D96Ca7EA4f2893fcdCb78a304101'
+  const chainId = await getChainId()
+  const config = await getCollectionConfig(chainId)
 
-  const args = [uri, proxy]
+  const args = [`${config.api}/consumables/`, config.proxy1155]
 
   const collectionContract = await deploy('CryptoKombatConsumables', {
     from: deployer,
@@ -21,6 +22,11 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const isTest = hre.network.name === 'hardhat' || hre.network.name === 'localhost'
 
   if (!isTest) console.log('Collection deployed successfully: ', collectionContract.address)
+
+  // await hre.ethernal.push({
+  //   name: 'CryptoKombatConsumables',
+  //   address: collectionContract.address,
+  // })
 
   if (!isTest) {
     try {

@@ -7,17 +7,26 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const { deployer } = await getNamedAccounts()
 
-  await deploy('MockBridge', {
+  const bridge = await deploy('MockBridge', {
     from: deployer,
     args: [],
     log: true,
   })
 
-  await deploy('MockProxyRegistry', {
+  const proxy = await deploy('MockProxyRegistry', {
     from: deployer,
     args: [],
     log: true,
   })
+
+  // await hre.ethernal.push({
+  //   name: 'MockBridge',
+  //   address: bridge.address,
+  // })
+  // await hre.ethernal.push({
+  //   name: 'MockProxyRegistry',
+  //   address: proxy.address,
+  // })
 }
 
 export default func

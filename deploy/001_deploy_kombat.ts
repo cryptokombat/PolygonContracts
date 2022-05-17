@@ -19,6 +19,11 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   if (!isTest) console.log('KombatToken deployed successfully: ', kombat.address)
 
+  // await hre.ethernal.push({
+  //   name: 'KombatToken',
+  //   address: kombat.address,
+  // })
+
   if (!isTest) {
     try {
       console.log('Waiting to verify...')

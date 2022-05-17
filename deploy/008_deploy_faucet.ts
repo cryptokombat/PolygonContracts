@@ -20,9 +20,14 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const isTest = hre.network.name === 'hardhat' || hre.network.name === 'localhost'
 
-  console.log('VombatFaucet deployed successfully: ', faucetContract.address)
+  if (!isTest) console.log('VombatFaucet deployed successfully: ', faucetContract.address)
 
-  if (hre.network.name !== 'hardhat' && hre.network.name !== 'localhost') {
+  // await hre.ethernal.push({
+  //   name: 'VombatFaucet',
+  //   address: faucetContract.address,
+  // })
+
+  if (!isTest) {
     try {
       console.log('Waiting to verify...')
 
@@ -35,13 +40,11 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     } catch (err) {
       console.log(err)
     }
-  } else {
-    console.log('Verification skipped...')
   }
 
-  console.log('Done')
+  if (!isTest) console.log('Done')
 }
 
 export default func
 func.tags = ['Faucet']
-func.dependencies = ['Vombat', 'CollectionEth', 'CollectionBsc', 'Consumables']
+func.dependencies = ['Vombat']
