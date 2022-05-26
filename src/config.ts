@@ -1,4 +1,5 @@
 import { NomicLabsHardhatPluginError } from 'hardhat/plugins'
+import { tokenToWei } from './utils'
 
 export enum NetworkID {
   MAINNET = 1,
@@ -34,7 +35,7 @@ export interface CollectionSupplyData {
 }
 export interface CollectionPriceData {
   id: number
-  price: number
+  price: string
 }
 
 export interface CollectionSupply extends Array<CollectionSupplyData> {}
@@ -76,11 +77,11 @@ const multicallAddress: { [networkID in NetworkID]?: string | undefined } = {
 const getPriceByMaxSupply = (max: number) => {
   switch (max) {
     case 10:
-      return 1200
+      return tokenToWei(1200)
     case 100:
-      return 120
+      return tokenToWei(120)
     case 1000:
-      return 12
+      return tokenToWei(12)
     default:
       return undefined
   }
@@ -302,6 +303,26 @@ async function getRootCollectionNetworkName(
   }
 }
 
+const bridgeMinterAddress: { [networkID in NetworkID]?: string } = {
+  [NetworkID.POLYGON]: '',
+  [NetworkID.POLYGON_MUMBAI]: '0x224f78681099D66ceEdf4E52ee62E5a98CCB4b9e',
+}
+
+export async function getBridgeMinter(networkId: string): Promise<String> {
+  const chainID = parseInt(networkId) as NetworkID
+
+  const minter = bridgeMinterAddress[chainID]
+
+  if (minter === undefined) {
+    throw new NomicLabsHardhatPluginError(
+      'Bridge Minter',
+      `The bridge minter address could not be found for this network. ChainID: ${chainID}.`
+    )
+  }
+
+  return minter
+}
+
 // ------------- Collection Configuration --------------------------------
 export interface CollectionConfig {
   proxy721: string
@@ -311,23 +332,23 @@ export interface CollectionConfig {
 
 const networkIDtoCollectionConfig: { [networkID in NetworkID]?: CollectionConfig } = {
   [NetworkID.POLYGON]: {
-    proxy721: '0x58807baD0B376efc12F5AD86aAc70E78ed67deaE',
-    proxy1155: '0x207Fa8Df3a17D96Ca7EA4f2893fcdCb78a304101',
+    proxy721: '',
+    proxy1155: '',
     api: 'https://api-polygon.cryptokombat.com',
   },
   [NetworkID.POLYGON_MUMBAI]: {
-    proxy721: '0x58807baD0B376efc12F5AD86aAc70E78ed67deaE',
-    proxy1155: '0x207Fa8Df3a17D96Ca7EA4f2893fcdCb78a304101',
+    proxy721: '',
+    proxy1155: '0x4a99ad1716664588A8E7411b15BAC5423222F980',
     api: 'https://api-staging.cryptokombat.com',
   },
   [NetworkID.HARDHAT]: {
-    proxy721: '0x58807baD0B376efc12F5AD86aAc70E78ed67deaE',
-    proxy1155: '0x207Fa8Df3a17D96Ca7EA4f2893fcdCb78a304101',
+    proxy721: '',
+    proxy1155: '0x4a99ad1716664588A8E7411b15BAC5423222F980',
     api: 'https://api-staging.cryptokombat.com',
   },
   [NetworkID.GANACHE]: {
-    proxy721: '0x58807baD0B376efc12F5AD86aAc70E78ed67deaE',
-    proxy1155: '0x207Fa8Df3a17D96Ca7EA4f2893fcdCb78a304101',
+    proxy721: '',
+    proxy1155: '0x4a99ad1716664588A8E7411b15BAC5423222F980',
     api: 'https://api-staging.cryptokombat.com',
   },
 }

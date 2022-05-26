@@ -32,8 +32,11 @@ async function setupCollection(collectionName: string, prefix: string): Promise<
     console.log('[Error] Failed to load collection data:', err.message)
   }
 
-  console.log(`[${collectionName}] Setting minter role for market...`)
-  await collection.grantRole(minterRole, market.address)
+  const hasMinterRole = await collection.hasRole(minterRole, market.address)
+  if (!hasMinterRole) {
+    console.log(`[${collectionName}] Setting minter role for market...`)
+    await collection.grantRole(minterRole, market.address)
+  }
 }
 
 async function main() {
