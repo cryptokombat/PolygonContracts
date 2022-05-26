@@ -173,20 +173,22 @@ describe('XpNetworkChildERC1155Preset', () => {
       })
 
       it('cannot mint non-existent token', async () => {
-        await expect(_.collection.mint(_.alice, NON_EXISTENT_TOKEN_ID, 1, zeroData)).to.be.revertedWith(
-          'ERC1155Tradable: !exists'
-        )
+        await expect(
+          _.collection['mint(address,uint256,uint256,bytes)'](_.alice, NON_EXISTENT_TOKEN_ID, 1, zeroData)
+        ).to.be.revertedWith('ERC1155Tradable: !exists')
       })
 
       it(`cannot mint > ${canMint} tokens`, async () => {
-        await expect(_.collection.mint(_.alice, TOKEN_ID, canMint + 1, zeroData)).to.be.revertedWith(
-          'ERC1155Tradable: !mintable'
-        )
+        await expect(
+          _.collection['mint(address,uint256,uint256,bytes)'](_.alice, TOKEN_ID, canMint + 1, zeroData)
+        ).to.be.revertedWith('ERC1155Tradable: !mintable')
       })
 
       if (canMint > 0) {
         it(`can mint <= ${canMint} tokens`, async () => {
-          await expect(_.collection.mint(_.alice, TOKEN_ID, canMint, zeroData))
+          await expect(
+            _.collection['mint(address,uint256,uint256,bytes)'](_.alice, TOKEN_ID, canMint, zeroData)
+          )
             .to.emit(_.collection, 'TransferSingle')
             .withArgs(_.deployer, zeroAddress, _.alice, TOKEN_ID, canMint)
         })
@@ -205,7 +207,7 @@ describe('XpNetworkChildERC1155Preset', () => {
       if (canMint > 1) {
         it('cannot burn > supply', async () => {
           //mint canMint tokens to alice account
-          await _.collection.mint(_.alice, TOKEN_ID, canMint, zeroData)
+          await _.collection['mint(address,uint256,uint256,bytes)'](_.alice, TOKEN_ID, canMint, zeroData)
 
           const supply = await _.collection.totalSupply(TOKEN_ID)
 
@@ -217,9 +219,9 @@ describe('XpNetworkChildERC1155Preset', () => {
 
         it('cannot burn > balance', async () => {
           //mint 1 token to alice account
-          await _.collection.mint(_.alice, TOKEN_ID, 1, zeroData)
+          await _.collection['mint(address,uint256,uint256,bytes)'](_.alice, TOKEN_ID, 1, zeroData)
           //mint 1 token to bob account
-          await _.collection.mint(_.bob, TOKEN_ID, 1, zeroData)
+          await _.collection['mint(address,uint256,uint256,bytes)'](_.bob, TOKEN_ID, 1, zeroData)
 
           // burning more tokens then alice has should revert
           await expect(_.aliceCollection.burn(_.alice, TOKEN_ID, 2)).to.be.revertedWith(
@@ -233,48 +235,40 @@ describe('XpNetworkChildERC1155Preset', () => {
       }
 
       it('non-bridge or non-minter can not mint tokens', async () => {
-        await expect(_.aliceCollection.mint(_.alice, ...depositData(TOKEN_ID, 1))).to.be.revertedWith(
-          'ERC1155Tradable: must have minter role'
-        )
+        await expect(
+          _.aliceCollection['mint(address,uint256,uint256,bytes)'](_.alice, ...depositData(TOKEN_ID, 1))
+        ).to.be.revertedWith('ERC1155Tradable: must have minter role')
       })
 
       it('bridge cannot mint non-existent token', async () => {
         await expect(_.bridge.mint(_.alice, ...depositData(NON_EXISTENT_TOKEN_ID, 1))).to.be.revertedWith(
-          'BridgeErrorNotExists'
+          'NotExists'
         )
       })
 
       it('bridge can not burn non-existent token', async () => {
-        await expect(_.bridge.burn(_.alice, NON_EXISTENT_TOKEN_ID, 1)).to.be.revertedWith(
-          'BridgeErrorNotExists'
-        )
+        await expect(_.bridge.burn(_.alice, NON_EXISTENT_TOKEN_ID, 1)).to.be.revertedWith('NotExists')
         await expect(_.bridge.burnBatch(_.alice, [NON_EXISTENT_TOKEN_ID], [1])).to.be.revertedWith(
-          'BridgeErrorNotExists'
+          'NotExists'
         )
       })
 
       it('bridge cannot mint more then max supply', async () => {
-        await expect(_.bridge.mint(_.alice, ...depositData(TOKEN_ID, 999))).to.be.revertedWith(
-          'BridgeErrorMaxUnderflow'
-        )
+        await expect(_.bridge.mint(_.alice, ...depositData(TOKEN_ID, 999))).to.be.revertedWith('MaxUnderflow')
         await expect(_.bridge.mintBatch(_.alice, ...depositDataBatch([TOKEN_ID], [999]))).to.be.revertedWith(
-          'BridgeErrorMaxUnderflow'
+          'MaxUnderflow'
         )
       })
 
       it('bridge can not burn more then total supply', async () => {
-        await expect(_.bridge.burn(_.alice, TOKEN_ID, 999)).to.be.revertedWith('BridgeErrorTotalOverflow')
-        await expect(_.bridge.burnBatch(_.alice, [TOKEN_ID], [999])).to.be.revertedWith(
-          'BridgeErrorTotalOverflow'
-        )
+        await expect(_.bridge.burn(_.alice, TOKEN_ID, 999)).to.be.revertedWith('TotalOverflow')
+        await expect(_.bridge.burnBatch(_.alice, [TOKEN_ID], [999])).to.be.revertedWith('TotalOverflow')
       })
 
       if (args.supply > 0) {
         it('bridge can not burn more then bridged supply', async () => {
-          await expect(_.bridge.burn(_.alice, TOKEN_ID, 1)).to.be.revertedWith('BridgeErrorBridgedOverflow')
-          await expect(_.bridge.burnBatch(_.alice, [TOKEN_ID], [1])).to.be.revertedWith(
-            'BridgeErrorBridgedOverflow'
-          )
+          await expect(_.bridge.burn(_.alice, TOKEN_ID, 1)).to.be.revertedWith('BridgedOverflow')
+          await expect(_.bridge.burnBatch(_.alice, [TOKEN_ID], [1])).to.be.revertedWith('BridgedOverflow')
         })
       } else {
         it(`[Skipped] Bridge burn more then bridged supply as supply = ${args.supply} = 0`, async () => {
@@ -286,7 +280,7 @@ describe('XpNetworkChildERC1155Preset', () => {
         it('bridge cannot mint more then reserved supply', async () => {
           await expect(
             _.bridge.mint(_.alice, ...depositData(TOKEN_ID, args.reserved + 1))
-          ).to.be.revertedWith('BridgeErrorReservedUnderflow')
+          ).to.be.revertedWith('ReservedUnderflow')
         })
       } else {
         it(`[Skipped] Bridge check reserved skipped as reserved + supply = max = ${args.reserved} + ${args.supply} = ${args.max}`, async () => {

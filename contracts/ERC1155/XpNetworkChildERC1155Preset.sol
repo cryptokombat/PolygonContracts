@@ -10,29 +10,29 @@ contract XpNetworkChildERC1155Preset is ERC1155Preset {
     // --- Errors ---
 
     /// Transaction `from` or `to` zero address
-    error BridgeErrorZeroUser();
+    error ZeroAddress();
 
     /// Collection is not approved to _msgSender()
-    error BridgeErrorNotApproved();
+    error NotApproved();
 
     /// Not same arrays length
-    error BridgeErrorLengthMistmach();
+    error LengthMistmach();
 
     /// Token id doesn't exists
     /// @param tokenId token id.
-    error BridgeErrorNotExists(uint256 tokenId);
+    error NotExists(uint256 tokenId);
 
     /// Token id max amount underflow
-    error BridgeErrorMaxUnderflow();
+    error MaxUnderflow();
 
     /// Token id reserved amount underflow
-    error BridgeErrorReservedUnderflow();
+    error ReservedUnderflow();
 
     /// Token id total amount overflow
-    error BridgeErrorTotalOverflow();
+    error TotalOverflow();
 
     /// Token id bridged amount overflow
-    error BridgeErrorBridgedOverflow();
+    error BridgedOverflow();
 
     constructor(
         string memory name,
@@ -44,8 +44,16 @@ contract XpNetworkChildERC1155Preset is ERC1155Preset {
     function mint(
         address _to,
         uint256 _id,
+        bytes calldata _data
+    ) external {
+        this.mint(_to, _id, 1, _data);
+    }
+
+    function mint(
+        address _to,
+        uint256 _id,
         uint256 _amount,
-        bytes memory _data
+        bytes calldata _data
     ) public override {
         if (hasRole(BRIDGE_ROLE, _msgSender())) {
             _checkZeroAddress(_to);
@@ -63,9 +71,9 @@ contract XpNetworkChildERC1155Preset is ERC1155Preset {
 
     function mintBatch(
         address _to,
-        uint256[] memory _ids,
-        uint256[] memory _amounts,
-        bytes memory _data
+        uint256[] calldata _ids,
+        uint256[] calldata _amounts,
+        bytes calldata _data
     ) public override {
         if (hasRole(BRIDGE_ROLE, _msgSender())) {
             _checkZeroAddress(_to);
@@ -87,6 +95,10 @@ contract XpNetworkChildERC1155Preset is ERC1155Preset {
         }
     }
 
+    function burnFor(address _from, uint256 _id) external {
+        this.burn(_from, _id, 1);
+    }
+
     function burn(
         address _from,
         uint256 _id,
@@ -104,6 +116,14 @@ contract XpNetworkChildERC1155Preset is ERC1155Preset {
         } else {
             super.burn(_from, _id, _amount);
         }
+    }
+
+    function burnBatchFor(
+        address _from,
+        uint256[] calldata _ids,
+        uint256[] calldata _amounts
+    ) external {
+        this.burnBatch(_from, _ids, _amounts);
     }
 
     function burnBatch(
@@ -132,32 +152,32 @@ contract XpNetworkChildERC1155Preset is ERC1155Preset {
     }
 
     function _checkZeroAddress(address _address) internal pure {
-        if (_address == address(0)) revert BridgeErrorZeroUser();
+        if (_address == address(0)) revert ZeroAddress();
     }
 
     function _checkLength(uint256[] memory _first, uint256[] memory _second) internal pure {
-        if (_first.length != _second.length) revert BridgeErrorLengthMistmach();
+        if (_first.length != _second.length) revert LengthMistmach();
     }
 
     function _checkApproved(address _from, address _operator) internal view {
-        if (!isApprovedForAll(_from, _operator)) revert BridgeErrorNotApproved();
+        if (!isApprovedForAll(_from, _operator)) revert NotApproved();
     }
 
     function _checkExists(uint256 _id) internal view {
-        if (!_exists(_id)) revert BridgeErrorNotExists(_id);
+        if (!_exists(_id)) revert NotExists(_id);
     }
 
     function _checkBridgeMint(uint256 _id, uint256 _amount) internal view {
         _checkExists(_id);
 
-        if (_maxSupply[_id] < _totalSupply[_id] + _amount) revert BridgeErrorMaxUnderflow();
-        if (_reservedSupply[_id] < _bridgedSupply[_id] + _amount) revert BridgeErrorReservedUnderflow();
+        if (_maxSupply[_id] < _totalSupply[_id] + _amount) revert MaxUnderflow();
+        if (_reservedSupply[_id] < _bridgedSupply[_id] + _amount) revert ReservedUnderflow();
     }
 
     function _checkBridgeBurn(uint256 _id, uint256 _amount) internal view {
         _checkExists(_id);
 
-        if (_totalSupply[_id] < _amount) revert BridgeErrorTotalOverflow();
-        if (_bridgedSupply[_id] < _amount) revert BridgeErrorBridgedOverflow();
+        if (_totalSupply[_id] < _amount) revert TotalOverflow();
+        if (_bridgedSupply[_id] < _amount) revert BridgedOverflow();
     }
 }
