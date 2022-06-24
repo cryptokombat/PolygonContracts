@@ -27,14 +27,18 @@
     "setup": "hardhat run",
     "fetch-collection": "hardhat run ./scripts/fetch-collection-supply.ts",
     "fetch-current": "hardhat run ./scripts/fetch-current-supply.ts",
-    "coverage": "hardhat coverage"
+    "coverage": "hardhat coverage",
+    "bridge": "ts-node ./scripts/bridge/index.ts"
   },
   "devDependencies": {
     "@0xsequence/multicall": "^0.37.1",
+    "@elrondnetwork/erdjs": "^10.2.5",
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@nomiclabs/hardhat-etherscan": "^3.0.3",
     "@openzeppelin/contracts": "^4.6.0",
     "@openzeppelin/contracts-upgradeable": "^4.6.0",
+    "@taquito/taquito": "^13.0.0",
+    "@temple-wallet/dapp": "^7.0.0",
     "@typechain/ethers-v5": "^10.0.0",
     "@typechain/hardhat": "^6.0.0",
     "@types/chai": "^4.3.0",
@@ -43,11 +47,10 @@
     "chai": "^4.3.6",
     "chai-ethers": "^0.0.1",
     "dotenv": "^16.0.0",
-    "ethers": "^5.6.6",
+    "ethers": "^5.6.7",
     "hardhat": "^2.9.3",
     "hardhat-deploy": "^0.11.4",
     "hardhat-deploy-ethers": "^0.3.0-beta.13",
-    "hardhat-ethernal": "^1.0.0",
     "hardhat-gas-reporter": "^1.0.8",
     "hardhat-tracer": "^1.1.0-rc.3",
     "mocha": "^10.0.0",
@@ -57,6 +60,7 @@
     "solidity-coverage": "^0.7.20",
     "ts-node": "^10.7.0",
     "typechain": "^8.0.0",
-    "typescript": "^4.6.3"
+    "typescript": "^4.6.3",
+    "xp.network": "git+https://github.com/xp-network/xpjs#bleeding-edge"
   }
 }

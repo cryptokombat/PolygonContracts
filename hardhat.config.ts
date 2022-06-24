@@ -8,7 +8,6 @@ import '@nomiclabs/hardhat-ethers'
 import '@typechain/hardhat'
 import 'hardhat-tracer'
 import 'solidity-coverage'
-import 'hardhat-ethernal'
 
 import { HardhatUserConfig } from 'hardhat/config'
 
@@ -30,6 +29,9 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {},
     localhost: {},
+    ganache: {
+      url: 'http://172.27.80.1:8545',
+    },
     mainnet: {
       url: `https://mainnet.infura.io/v3/${INFURA_API_KEY}`,
       saveDeployments: true,
@@ -121,15 +123,6 @@ const config: HardhatUserConfig = {
       polygon: POLYGONSCAN_API_KEY,
       polygonMumbai: POLYGONSCAN_API_KEY,
     },
-  },
-  ethernal: {
-    disableSync: false,
-    disableTrace: false,
-    uploadAst: true,
-    disabled: true,
-    resetOnStart: 'Ganache',
-    email: process.env.ETHERNAL_EMAIL,
-    password: process.env.ETHERNAL_PASSWORD,
   },
   gasReporter: {
     coinmarketcap: COINMARKETCAP_API_KEY,
