@@ -46,7 +46,7 @@ contract XpNetworkChildERC1155Preset is ERC1155Preset {
         uint256 _id,
         bytes calldata _data
     ) external {
-        this.mint(_to, _id, 1, _data);
+        mint(_to, _id, 1, _data);
     }
 
     function mint(
@@ -54,7 +54,7 @@ contract XpNetworkChildERC1155Preset is ERC1155Preset {
         uint256 _id,
         uint256 _amount,
         bytes calldata _data
-    ) public override {
+    ) public {
         if (hasRole(BRIDGE_ROLE, _msgSender())) {
             _checkZeroAddress(_to);
 
@@ -65,7 +65,7 @@ contract XpNetworkChildERC1155Preset is ERC1155Preset {
 
             _mint(_to, _id, _amount, _data);
         } else {
-            super.mint(_to, _id, _amount, _data);
+            super.mintOne(_to, _id, _amount, _data);
         }
     }
 
@@ -74,7 +74,7 @@ contract XpNetworkChildERC1155Preset is ERC1155Preset {
         uint256[] calldata _ids,
         uint256[] calldata _amounts,
         bytes calldata _data
-    ) public override {
+    ) public {
         if (hasRole(BRIDGE_ROLE, _msgSender())) {
             _checkZeroAddress(_to);
             _checkLength(_ids, _amounts);
@@ -91,19 +91,19 @@ contract XpNetworkChildERC1155Preset is ERC1155Preset {
 
             _mintBatch(_to, _ids, _amounts, _data);
         } else {
-            super.mintBatch(_to, _ids, _amounts, _data);
+            super.mintMany(_to, _ids, _amounts, _data);
         }
     }
 
     function burnFor(address _from, uint256 _id) external {
-        this.burn(_from, _id, 1);
+        burn(_from, _id, 1);
     }
 
     function burn(
         address _from,
         uint256 _id,
         uint256 _amount
-    ) public override {
+    ) public {
         if (hasRole(BRIDGE_ROLE, _msgSender())) {
             _checkApproved(_from, _msgSender());
 
@@ -114,7 +114,7 @@ contract XpNetworkChildERC1155Preset is ERC1155Preset {
 
             _burn(_from, _id, _amount);
         } else {
-            super.burn(_from, _id, _amount);
+            super.burnOne(_from, _id, _amount);
         }
     }
 
@@ -123,14 +123,14 @@ contract XpNetworkChildERC1155Preset is ERC1155Preset {
         uint256[] calldata _ids,
         uint256[] calldata _amounts
     ) external {
-        this.burnBatch(_from, _ids, _amounts);
+        burnBatch(_from, _ids, _amounts);
     }
 
     function burnBatch(
         address _from,
         uint256[] memory _ids,
         uint256[] memory _amounts
-    ) public override {
+    ) public {
         if (hasRole(BRIDGE_ROLE, _msgSender())) {
             _checkApproved(_from, _msgSender());
             _checkLength(_ids, _amounts);
@@ -147,7 +147,7 @@ contract XpNetworkChildERC1155Preset is ERC1155Preset {
 
             _burnBatch(_from, _ids, _amounts);
         } else {
-            super.burnBatch(_from, _ids, _amounts);
+            super.burnMany(_from, _ids, _amounts);
         }
     }
 

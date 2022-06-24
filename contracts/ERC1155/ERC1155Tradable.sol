@@ -224,7 +224,7 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155 {
      * @param _quantity    Amount of tokens to mint
      * @param _data        Data to pass if receiver is contract
      */
-    function mint(
+    function mintOne(
         address _to,
         uint256 _id,
         uint256 _quantity,
@@ -246,7 +246,7 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155 {
      * @param _quantities  Array of amounts of tokens to mint per id
      * @param _data        Data to pass if receiver is contract
      */
-    function mintBatch(
+    function mintMany(
         address _to,
         uint256[] memory _ids,
         uint256[] memory _quantities,
@@ -272,7 +272,7 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155 {
      * @param _id          Token ID to burn
      * @param _quantity    Amount of tokens to burn
      */
-    function burn(
+    function burnOne(
         address _from,
         uint256 _id,
         uint256 _quantity
@@ -295,7 +295,7 @@ contract ERC1155Tradable is AccessControl, Ownable, ERC1155 {
      * @param _ids         Array of ids to burn
      * @param _quantities  Array of amounts to burn per id
      */
-    function burnBatch(
+    function burnMany(
         address _from,
         uint256[] memory _ids,
         uint256[] memory _quantities
